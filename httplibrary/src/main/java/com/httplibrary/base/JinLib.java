@@ -15,16 +15,15 @@ public class JinLib extends Application{
         super.onCreate();
         initialize(this);
     }
-    public static  void initialize(final Context context){
-        sContext=context;
+    public static void initialize(final Context context){
+        sContext = context;
     }
     public static Context getContext(){
         return sContext;
     }
 
     public JinLib(){
-        sContext=this;
-        if (sContext==null){
+        if (sContext == null){
             Log.e("JinLib","JinLib is not initialize");
             return;
         }

@@ -7,7 +7,8 @@ import android.net.NetworkInfo;
 import com.httplibrary.base.JinLib;
 
 /**
- * Created by Administrator on 2016/11/3.
+ * 
+ * Created by XiaoSai on 2016/11/3.
  */
 public class AppUtil {
     /**
@@ -18,19 +19,28 @@ public class AppUtil {
      */
     public static boolean isNetworkAvailable() {
         try {
-            ConnectivityManager connectivity = (ConnectivityManager) JinLib.getContext()
-                    .getSystemService(Context.CONNECTIVITY_SERVICE);
-            if (connectivity != null) {
-                NetworkInfo info = connectivity.getActiveNetworkInfo();
-                if (info != null && info.isConnected()) {
-                    if (info.getState() == NetworkInfo.State.CONNECTED) {
-                        return true;
-                    }
+            ConnectivityManager connectivityManager=(ConnectivityManager) JinLib.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+            if (networkInfo!=null&&networkInfo.isConnected()) {
+                // 当前网络是否已经连接  
+                if (networkInfo.getState() == NetworkInfo.State.CONNECTED) {
+                    //网络可用
+//                    int type = networkInfo.getType();
+//                    if (type == ConnectivityManager.TYPE_WIFI) {
+//                        //wifi网络
+//                        
+//                    } else if (type == ConnectivityManager.TYPE_MOBILE) {
+//                        //移动网络
+//                        
+//                    } else{
+//                        //未知网络
+//                    }
+
+                    return true;
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
         }
         return false;
     }

@@ -13,21 +13,22 @@ import retrofit2.http.POST;
 import retrofit2.http.PartMap;
 import retrofit2.http.Path;
 import retrofit2.http.QueryMap;
+import rx.Observable;
 
 /**
- * Created by Administrator on 2016/11/3.
+ * 
+ * Created by xs on 2016/11/3.
  */
 public interface Params{
     @FormUrlEncoded
     @POST("{filePath}")
-    Call<ResponseBody> params(@Path("filePath") String filePath,@FieldMap Map<String, String> param);
-
-
+    Observable<ResponseBody> paramsPost(@Path("filePath") String filePath,@FieldMap Map<String, String> param);
+    
     @GET("{filePath}")
-    Call<ResponseBody> params(@Path("filePath") String filePath);
+    Observable<ResponseBody> paramsGet(@Path("filePath") String filePath,@QueryMap Map<String, String> param);
 
     @POST("{filePath}")
     @Multipart
-    Call<ResponseBody> params(@Path("filePath") String filePath,@QueryMap Map<String,String> options,
+    Observable<ResponseBody> paramsUpload(@Path("filePath") String filePath,@QueryMap Map<String,String> options,
                               @PartMap Map<String,RequestBody> files);
 }

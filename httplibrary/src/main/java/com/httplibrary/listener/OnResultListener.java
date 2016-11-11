@@ -1,7 +1,7 @@
 package com.httplibrary.listener;
 
 /**
- * Created by Administrator on 2016/11/3.
+ * Created by soaic on 2016/11/3.
  */
 public class OnResultListener<T> {
     public boolean onCache(String cache) {//返回true,表示不再请求网络
@@ -12,9 +12,9 @@ public class OnResultListener<T> {
         return false;
     }
 
-    public  void onSuccess(String result){}
+    public void onSuccess(String result){}
     
-    public  void onSuccess(T object){}
+    public void onSuccess(T object){}
 
     public void onFailure(String message) {//根据需求实现
     }

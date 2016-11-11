@@ -3,10 +3,12 @@ package com.httplibrary.retroft;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.util.ArrayMap;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.httplibrary.base.JinLib;
 import com.httplibrary.cache.ACache;
+import com.httplibrary.interceptor.HttpLoggingInterceptor;
 import com.httplibrary.listener.OnResultListener;
 import com.httplibrary.util.AppUtil;
 import com.httplibrary.util.StringUtil;
@@ -19,52 +21,59 @@ import java.util.concurrent.TimeUnit;
 import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
- * Http请求类
+ * HttpClient请求类
  * Created by soaic on 2016/10/23.
  */
 
-public class RetrofitUtil{
-    private static String BASE_URL="";
+public class HttpClient{
+    private static String BASE_URL = "";
     private Builder mBuilder;
     private String cacheKey;
     private String mCache;
     private Retrofit retrofit;
-    private Call<ResponseBody> mCall;
-    public static final int OBJECT=1;//返回数据为json对象
-    public static final int ARRAY=2;//返回数据为数组
+    private Observable<ResponseBody> mCall;
+    public static final int OBJECT = 1;//返回数据为json对象
+    public static final int STRING = 0;//返回数据为字符串
     private Gson gson;
 
-    private RetrofitUtil(){
-        OkHttpClient client = new OkHttpClient();
-        client.newBuilder()
+    private HttpClient(){
+        
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        
+        OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(10000L,TimeUnit.MILLISECONDS)       //设置连接超时
                 .readTimeout(10000L,TimeUnit.MILLISECONDS)          //设置读取超时
                 .writeTimeout(10000L, TimeUnit.MILLISECONDS)         //设置写入超时
-                .cache(new Cache(JinLib.getContext().getCacheDir(),10 * 1024 * 1024));   //设置缓存目录和10M缓存
-        
+                .cache(new Cache(JinLib.getContext().getCacheDir(),10 * 1024 * 1024))   //设置缓存目录和10M缓存
+                .addInterceptor(interceptor)    //添加日志拦截器（该方法也可以设置公共参数，头信息）
+                .build();
         retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .client(client)
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())   //添加RxJava
                 .build();
         
         gson = new Gson();
     }
     
-    private RetrofitUtil(Builder builder){
+    private HttpClient(Builder builder){
         this.mBuilder = builder;
     }
     
-    public static RetrofitUtil getInstance(){
+    public static HttpClient getInstance(){
         return SingleLoader.INSTANCE;
     }
     private static class SingleLoader{
-        private static final RetrofitUtil INSTANCE = new RetrofitUtil();
+        private static final HttpClient INSTANCE = new HttpClient();
     }
 
     public Builder getBuilder() {
@@ -91,7 +100,7 @@ public class RetrofitUtil{
         }
 
         mCall =retrofit.create(Params.class)
-                .params(mBuilder.url, mBuilder.params);
+                .paramsPost(mBuilder.url, mBuilder.params);
 
         request(onResultListener);
     }
@@ -109,19 +118,10 @@ public class RetrofitUtil{
             return;
         }
 
-        if (!mBuilder.params.isEmpty()){
-            String value="";
-            String span="";
-            for (Map.Entry<String, String> entry :
-                    mBuilder.params.entrySet()) {
-                String key = entry.getKey();
-                String val = entry.getValue();
-                if (!value.equals(""))span="&";
-                String par=StringUtil.buffer(span,key,"=",val);
-                value=StringUtil.buffer(value,par);
-            }
-            mBuilder.url(StringUtil.buffer(mBuilder.url,"?",value));
-        }
+        mCall =retrofit.create(Params.class)
+                .paramsGet(mBuilder.url, mBuilder.params);
+        
+        request(onResultListener);
     }
 
     /**
@@ -129,33 +129,34 @@ public class RetrofitUtil{
      * @param onResultListener
      */
     private void request(final OnResultListener onResultListener){
-        mCall.enqueue(new Callback<ResponseBody>() {
+        //访问网络切换异步线程
+        mCall.subscribeOn(Schedulers.io())
+            //响应结果处理切换成主线程
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new Subscriber<ResponseBody>(){
+                @Override
+                public void onCompleted(){
+                }
 
-            @Override
-            public void onResponse(Call<ResponseBody> call,Response<ResponseBody> response){
-                System.out.print("成功==>" + response.code());
-                if (response.code() == 200) {
+                @Override
+                public void onError(Throwable e){
+                    e.printStackTrace();
+                    handlerError("网络繁忙，请稍后重试！",onResultListener);
+                }
+
+                @Override
+                public void onNext(ResponseBody response){
                     try {
-                        String result=response.body().string();
+                        String result = response.string();
                         ACache.get().put(cacheKey, result);
                         onResultListener.onSuccess(result);
                         parseJson(result,onResultListener);
-
                     } catch (IOException e) {
                         e.printStackTrace();
+                        handlerError("处理数据失败!",onResultListener);
                     }
-                }else if (response.code() > 400){
-                    handlerError("请求数据失败！",onResultListener);
-                }else if (response.code() > 500){
-                    handlerError("服务器繁忙，请稍后重试",onResultListener);
                 }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call,Throwable t){
-                handlerError("网络繁忙，请稍后重试！",onResultListener);
-            }
-        });
+            });
     }
 
     private void handlerError(String message,OnResultListener onResultListener){
@@ -168,8 +169,8 @@ public class RetrofitUtil{
         switch (mBuilder.bodyType){
             case OBJECT:
                 return onResultListener.onCache(gson.fromJson(mCache,mBuilder.clazz));
-            case ARRAY:
-                return onResultListener.onCache(gson.fromJson(json,mBuilder.clazz));
+            case STRING:
+                return onResultListener.onCache(json);
             default:
                 return false;
         }
@@ -180,8 +181,8 @@ public class RetrofitUtil{
             case OBJECT:
                 onResultListener.onFailure(gson.fromJson(mCache,mBuilder.clazz),error);
                 break;
-            case ARRAY:
-                onResultListener.onFailure(gson.fromJson(json,mBuilder.clazz),error);
+            case STRING:
+                onResultListener.onFailure(json,error);
                 break;
         }
     }
@@ -191,8 +192,8 @@ public class RetrofitUtil{
             case OBJECT:
                 onResultListener.onSuccess(gson.fromJson(json,mBuilder.clazz));
                 break;
-            case ARRAY:
-                onResultListener.onSuccess(gson.fromJson(json,mBuilder.clazz));
+            case STRING:
+                onResultListener.onSuccess(json);
                 break;
         }
     }
@@ -200,7 +201,7 @@ public class RetrofitUtil{
     @TargetApi(Build.VERSION_CODES.KITKAT)
     public static final class Builder{
         private String baseUrl = "";
-        private int bodyType = 0;//返回数据的类型,因为前期返回是字符串，为了避免修改
+        private int bodyType = 0;//返回数据的类型,默认字符串
         private String url;
         private Map<String,String> params = new ArrayMap<>(); //ArrayMap是牺牲了时间换区空间,数据小用HashMap,数据大用ArrayMap
         private Map<String,File> files = new ArrayMap<>();
@@ -210,7 +211,7 @@ public class RetrofitUtil{
         public Builder(){}
         
         public Builder baseUrl(String baseUrl){
-            this.baseUrl = url;
+            this.baseUrl = baseUrl;
             return this;
         }
         
@@ -240,9 +241,9 @@ public class RetrofitUtil{
             return this;
         }
         
-        public RetrofitUtil build(){
+        public HttpClient build(){
             BASE_URL = baseUrl;
-            RetrofitUtil retrofitUtil= RetrofitUtil.getInstance();
+            HttpClient retrofitUtil= HttpClient.getInstance();
             retrofitUtil.setBuilder(this);
             return getInstance();
         }
