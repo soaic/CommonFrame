@@ -1,4 +1,4 @@
-package com.imagelibrary;
+package com.imagelibrary.glide;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -18,16 +18,16 @@ import com.bumptech.glide.load.resource.bitmap.BitmapResource;
  * 自定义圆角处理
  * Created by XiaoSai on 2016/7/14.
  */
-public class RoundedCornersTransformation  implements Transformation<Bitmap>{
+public class CustomTransformation implements Transformation<Bitmap>{
 
     private BitmapPool mBitmapPool;
     private int mRadius;
 
-    public RoundedCornersTransformation(Context context, int mRadius) {
+    public CustomTransformation(Context context,int mRadius) {
         this(Glide.get(context).getBitmapPool(), mRadius);
     }
 
-    public RoundedCornersTransformation(BitmapPool mBitmapPool, int mRadius) {
+    public CustomTransformation(BitmapPool mBitmapPool,int mRadius) {
         this.mBitmapPool = mBitmapPool;
         this.mRadius = mRadius;
     }

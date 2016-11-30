@@ -1,4 +1,4 @@
-package com.imagelibrary;
+package com.imagelibrary.glide;
 
 import android.content.Context;
 import android.graphics.Bitmap;

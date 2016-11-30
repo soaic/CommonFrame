@@ -1,4 +1,4 @@
-package com.imagelibrary;
+package com.imagelibrary.glide;
 
 import android.os.AsyncTask;
 import android.os.Handler;
