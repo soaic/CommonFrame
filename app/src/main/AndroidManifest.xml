@@ -12,15 +12,17 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".mvp.ui.activity.ImageActivity">
+        <activity android:name=".IndexActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".mvp.ui.activity.ImageActivity">
-        </activity>
+        <activity android:name=".greendao.GreenDaoDemoActivity"/>
+        <activity android:name=".glide.GlideDemoActivity"/>
+        <activity android:name=".mvp.ui.activity.MainActivity"/>
+            
     </application>
 
 </manifest>

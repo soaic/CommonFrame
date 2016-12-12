@@ -1,10 +1,8 @@
 package com.commonframe;
 
 import android.app.Application;
-import android.content.Context;
-import android.support.multidex.MultiDex;
-import android.support.multidex.MultiDexApplication;
 
+import com.greendao.utils.DbCore;
 import com.httplibrary.base.JinLib;
 
 /**
@@ -14,21 +12,15 @@ import com.httplibrary.base.JinLib;
  * @date 2016/11/8 19:14
  * @copyright: Copyright (c) 2016
  */
-public class App extends MultiDexApplication{
+public class App extends Application{
     @Override
     public void onCreate(){
         super.onCreate();
-
+        //初始化imageLibrary
         JinLib.initialize(this);
-    }
-
-    /**
-     * 分割 Dex 支持
-     * @param base
-     */
-    @Override
-    protected void attachBaseContext(Context base) {
-        super.attachBaseContext(base);
-        MultiDex.install(this);
+        //初始化greenDaoLibrary
+        DbCore.init(this);
+        //启用sql日志
+        DbCore.enableQueryBuilderLog();
     }
 }

@@ -225,20 +225,20 @@ public class ImageUtils{
 
     /**
      * 获取Data下缓存大小
-     * @param context
-     * @param textView
+     * @param context 上下文
+     * @param cacheReceiveListener 获取文件大小监听
      */
-    public void getDataDiskCacheSize(Context context,TextView textView){
-        new DiskCacheSizeTask(textView).execute(new File(context.getCacheDir(),DiskCache.Factory.DEFAULT_DISK_CACHE_DIR));
+    public void getDataDiskCacheSize(Context context,DiskCacheSizeTask.CacheReceiveListener cacheReceiveListener){
+        new DiskCacheSizeTask(cacheReceiveListener).execute(new File(context.getCacheDir(),DiskCache.Factory.DEFAULT_DISK_CACHE_DIR));
     }
 
     /**
      * 获取SD卡下缓存大小
-     * @param context
-     * @param textView 要显示的view
+     * @param context 上下文
+     * @param cacheReceiveListener 获取文件大小监听
      */
-    public void getSDDiskCacheSize(Context context,TextView textView){
-        new DiskCacheSizeTask(textView).execute(new File(context.getExternalCacheDir(),DiskCache.Factory.DEFAULT_DISK_CACHE_DIR));
+    public void getSDDiskCacheSize(Context context,DiskCacheSizeTask.CacheReceiveListener cacheReceiveListener){
+        new DiskCacheSizeTask(cacheReceiveListener).execute(new File(context.getExternalCacheDir(),DiskCache.Factory.DEFAULT_DISK_CACHE_DIR));
     }
 
     /**

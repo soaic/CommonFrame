@@ -16,19 +16,17 @@ import java.util.Arrays;
 
 public class DiskCacheSizeTask extends AsyncTask<File, Long, Long>{
     
-    private final TextView resultView;
+    private final CacheReceiveListener cacheReceiveListener;
 
-    public DiskCacheSizeTask(TextView resultView) {
-        this.resultView = resultView;
+    public DiskCacheSizeTask(CacheReceiveListener cacheReceiveListener) {
+        this.cacheReceiveListener = cacheReceiveListener;
     }
 
     @Override
-    protected void onPreExecute() {
-        resultView.setText("Calculating...");
-    }
+    protected void onPreExecute() { }
 
     @Override
-    protected void onProgressUpdate(Long... values) { /* onPostExecute(values[values.length - 1]); */ }
+    protected void onProgressUpdate(Long... values) {  }
 
     @Override
     protected Long doInBackground(File... dirs) {
@@ -44,8 +42,7 @@ public class DiskCacheSizeTask extends AsyncTask<File, Long, Long>{
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
                 public void run() {
-                    resultView.setText("error");
-                    Toast.makeText(resultView.getContext(),message,Toast.LENGTH_LONG).show();
+                    cacheReceiveListener.onFail("error："+message);
                 }
             });
         }
@@ -54,8 +51,7 @@ public class DiskCacheSizeTask extends AsyncTask<File, Long, Long>{
 
     @Override
     protected void onPostExecute(Long size) {
-        String sizeText = android.text.format.Formatter.formatFileSize(resultView.getContext(), size);
-        resultView.setText(sizeText);
+        cacheReceiveListener.onSuccess(size);
     }
 
     private long calculateSize(File dir) {
@@ -67,5 +63,13 @@ public class DiskCacheSizeTask extends AsyncTask<File, Long, Long>{
             for (File child : children)
                 result += calculateSize(child);
         return result;
+    }
+
+    /**
+     * 缓存获取监听
+     */
+    public interface CacheReceiveListener{
+        void onSuccess(Long sizeBytes);
+        void onFail(String str);
     }
 }
