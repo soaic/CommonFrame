@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply plugin: 'org.greenrobot.greendao'
+apply plugin: 'org.greenrobot.greendao' 
 
 android {
     compileSdkVersion 25
@@ -22,7 +22,7 @@ android {
 }
 
 greendao {
-    schemaVersion 1
+    schemaVersion 3 
     daoPackage 'com.greendao.dao'
     targetGenDir 'src/main/java'
 }

@@ -138,7 +138,7 @@ public class GreenDaoDemoActivity extends Activity{
         }
         //List<User> users = UserService.getInstance().getDao().queryBuilder().where(UserDao.Properties.Name.like("%"+userName+"%")).build().list();
         //List<User> users = UserService.getInstance().getDao().queryBuilder().where(new WhereCondition.PropertyCondition(UserDao.Properties.Name, " LIKE ?", "%"+userName+"%")).build().list();
-        UserService.getInstance().getQueryBuilder().where(new WhereCondition.PropertyCondition(UserDao.Properties.Name, " LIKE ?", "%"+userName+"%")).rx().list()
+        UserService.getInstance().getQueryBuilder().where(new WhereCondition.PropertyCondition(UserDao.Properties.UserName, " LIKE ?", "%"+userName+"%")).rx().list()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<List<User>>(){
                     @Override
@@ -182,7 +182,7 @@ public class GreenDaoDemoActivity extends Activity{
             return;
         }
         User user = mDatas.get(0);
-        user.setName(userName);
+        user.setUserName(userName);
         //UserService.getInstance().update(user);
         //UserService.getInstance().getDao().update(user);
         UserService.getInstance().getRxDao().update(user)

@@ -26,16 +26,4 @@ public class UserService extends BaseService<User,Long>{
         final static UserService INSTANCE = new UserService();
     }
     
-    public UserDao getDao(){
-        return DbCore.getDaoSession().getUserDao();
-    }
-    
-    public RxDao<User,Long> getRxDao(){
-        return  getDao().rx();
-    }
-
-    public QueryBuilder<User> getQueryBuilder(){
-        return  getDao().queryBuilder();
-    }
-
 }

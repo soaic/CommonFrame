@@ -2,6 +2,7 @@ package com.greendao.service;
 
 import org.greenrobot.greendao.AbstractDao;
 import org.greenrobot.greendao.query.QueryBuilder;
+import org.greenrobot.greendao.rx.RxDao;
 
 import java.util.List;
 
@@ -101,5 +102,16 @@ public class BaseService<T, K>{
     public void detach(T item) {
         mDao.detach(item);
     }
-    
+
+    public AbstractDao getDao(){
+        return mDao;
+    }
+
+    public RxDao<T,K> getRxDao(){
+        return  mDao.rx();
+    }
+
+    public QueryBuilder<T> getQueryBuilder(){
+        return  mDao.queryBuilder();
+    }
 }

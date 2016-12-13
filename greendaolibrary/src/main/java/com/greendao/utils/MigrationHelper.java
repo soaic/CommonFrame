@@ -15,13 +15,9 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * GreenDao 升级帮助类
+ * GreenDao 升级数据表更新字段帮助类
  * use : 在DaoMaster中onUpgrade方法添加
- *        switch(oldVersion){
- *            case 1: MigrationHelper.getInstance().migrate(db,CacheDao.class);
- *            case 2: MigrationHelper.getInstance().migrate(db,Cache2Dao.class);
- *            case 3: MigrationHelper.getInstance().migrate(db,Cache3Dao.class);
- *        }
+ *        MigrationHelper.getInstance().migrate(db,UserDao.class);
  * Created by pokawa on 18/05/15.
  */
 public class MigrationHelper{
@@ -102,7 +98,7 @@ public class MigrationHelper{
 
             String tableName = daoConfig.tablename;
             String tempTableName = daoConfig.tablename.concat("_TEMP");
-            ArrayList<String> properties = new ArrayList();
+            ArrayList<String> properties = new ArrayList<>();
 
             for (int j = 0; j < daoConfig.properties.length; j++) {
                 String columnName = daoConfig.properties[j].columnName;

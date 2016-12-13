@@ -16,12 +16,12 @@ public class User{
     private Long id;
     
     @NotNull
-    private String name;
+    private String userName;
 
-    @Generated(hash = 1709734220)
-    public User(Long id, @NotNull String name) {
+    @Generated(hash = 1542876495)
+    public User(Long id, @NotNull String userName) {
         this.id = id;
-        this.name = name;
+        this.userName = userName;
     }
 
     @Generated(hash = 586692638)
@@ -36,12 +36,13 @@ public class User{
         this.id = id;
     }
 
-    public String getName() {
-        return this.name;
+    public String getUserName() {
+        return this.userName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
+
     
 }

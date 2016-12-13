@@ -35,7 +35,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(MyViewHolder holder,int position){
-        holder.tv.setText( mDatas.get(position).getName());
+        holder.tv.setText( mDatas.get(position).getUserName());
     }
 
     @Override

@@ -9,7 +9,7 @@ import org.greenrobot.greendao.query.QueryBuilder;
 
 /**
  * GreenDao初始配置 在application中设置
- * use : DbCore.init(this);     //初始化GreenDao
+ * use : DbCore.init(this);                 //初始化GreenDao
  *       DbCore.enableQueryBuilderLog();    //打印sql语句日志
  */
 public class DbCore {
@@ -34,7 +34,7 @@ public class DbCore {
 
     public static DaoMaster getDaoMaster() {
         if (daoMaster == null) {
-            DaoMaster.OpenHelper helper = new DaoMaster.DevOpenHelper(mContext, DB_NAME, null);
+            OnlineOpenHelper helper = new OnlineOpenHelper(mContext, DB_NAME, null);
             daoMaster = new DaoMaster(helper.getWritableDatabase());
         }
         return daoMaster;
