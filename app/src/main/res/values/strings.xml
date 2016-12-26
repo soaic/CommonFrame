@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">CommonFrame</string>
+    <string name="app_name">工业帮手-交互演示</string>
+    <string name="title_activity_main2">Main2Activity</string>
 </resources>

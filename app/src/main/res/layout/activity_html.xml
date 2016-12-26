@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:id="@+id/activity_html"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.commonframe.HtmlActivity"
+    android:orientation="vertical">
+
+    <Button
+        android:text="师傅_客户先付"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:id="@+id/button"
+        android:background="@color/white"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:background="#999"/>
+    
+    <Button
+        android:text="师傅_客户后付"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:id="@+id/button2"
+        android:background="@color/white"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:background="#999"/>
+    
+    <Button
+        android:text="师傅-客户先付-申请退款"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:id="@+id/button3"
+        android:background="@color/white"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:background="#999"/>
+
+    <Button
+        android:text="用户_先付"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:id="@+id/button4"
+        android:background="@color/white"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:background="#999"/>
+
+
+    <Button
+        android:text="用户_后付"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:id="@+id/button5"
+        android:background="@color/white"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:background="#999"/>
+    
+</LinearLayout>

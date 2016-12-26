@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.commonframe.glide.GlideDemoActivity;
 import com.commonframe.greendao.GreenDaoDemoActivity;
+import com.commonframe.material.MaterialActivity;
 import com.commonframe.mvp.ui.activity.MainActivity;
 
 public class IndexActivity extends Activity{
@@ -39,6 +40,13 @@ public class IndexActivity extends Activity{
             @Override
             public void onClick(View view){
                 startActivity(new Intent(getApplicationContext(),GreenDaoDemoActivity.class));
+            }
+        });
+        
+        findViewById(R.id.index_material_design).setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                startActivity(new Intent(getApplicationContext(),MaterialActivity.class));
             }
         });
     }

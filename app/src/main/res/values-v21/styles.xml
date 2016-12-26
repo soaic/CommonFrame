@@ -1,0 +1,25 @@
+<resources>
+
+    <!--<style name="AppTheme" parent="android:Theme.Material.Light">-->
+        <!--&lt;!&ndash; Customize your theme here. &ndash;&gt;-->
+        <!--<item name="android:colorPrimary">@color/colorPrimary</item>-->
+        <!--<item name="android:colorPrimaryDark">@color/colorPrimary</item>-->
+        <!--<item name="android:colorAccent">@color/colorAccent</item>-->
+        <!--<item name="android:textColorPrimary">@color/white</item>-->
+        <!--<item name="android:windowBackground">@color/white</item>-->
+        <!--<item name="android:navigationBarColor">@color/transparent</item>-->
+    <!--</style>-->
+    
+    <style name="ripple_style_1">
+        <item name="android:background">?android:attr/selectableItemBackground</item>
+        <item name="android:colorControlHighlight">@color/colorPrimary</item>
+        <item name="android:colorAccent">@color/colorPrimaryDark</item>
+    </style>
+
+    <style name="ripple_style_2">
+        <item name="android:background">?android:attr/selectableItemBackgroundBorderless</item>
+        <item name="android:colorControlHighlight">@color/colorPrimary</item>
+        <item name="android:colorAccent">@color/colorPrimaryDark</item>
+    </style>
+    
+</resources>

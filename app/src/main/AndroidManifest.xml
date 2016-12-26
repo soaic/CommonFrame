@@ -12,7 +12,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".IndexActivity">
+        <activity android:name=".HtmlActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -22,7 +22,11 @@
         <activity android:name=".greendao.GreenDaoDemoActivity"/>
         <activity android:name=".glide.GlideDemoActivity"/>
         <activity android:name=".mvp.ui.activity.MainActivity"/>
-            
+        <activity android:name=".material.MaterialActivity">
+        </activity>
+        <activity android:name=".IndexActivity"/>
+        <activity android:name=".base.WebBrowserActivity">
+        </activity>
     </application>
 
 </manifest>
