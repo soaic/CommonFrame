@@ -30,25 +30,32 @@ public class WebBrowserActivity extends BaseActivity{
     public final static String INTENT_URL = "url";
     public final static String INTENT_TITLE = "title";
     private Handler handler = new Handler();
-    
-    @Override
-    protected void onCreate(Bundle savedInstanceState){
-        super.onCreate(savedInstanceState);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        
-        setContentView(R.layout.activity_web_browser);
-        setConfigCallback((WindowManager)getApplicationContext().getSystemService(Context.WINDOW_SERVICE));
-        web_view = getViewById(R.id.web_view);
-        web_view_progress = getViewById(R.id.web_view_progress);
-        
-        initWebView();
 
+    @Override
+    protected void initVariables(Bundle savedInstanceState){
         if(getIntent().hasExtra(INTENT_URL)){
             web_view.loadUrl(getIntent().getStringExtra(INTENT_URL));
         }
-        
+    }
+
+    @Override
+    protected void initViews(Bundle savedInstanceState){
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        setContentView(R.layout.activity_web_browser);
+        setConfigCallback((WindowManager)getApplicationContext().getSystemService(Context.WINDOW_SERVICE));
+
+        web_view = getViewById(R.id.web_view);
+        web_view_progress = getViewById(R.id.web_view_progress);
+
+        initWebView();
+
         //web_view.loadUrl("file:///android_asset/index/index.html");
+    }
+
+    @Override
+    protected void loadData(){
+
     }
 
     private void initWebView(){

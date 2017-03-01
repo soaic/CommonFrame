@@ -1,0 +1,12 @@
+<resources>
+    <!-- 4.4 -->
+    <style name="AppTheme" parent="@style/BaseAppTheme"/>
+
+    <!-- 首屏Activity Style -->
+    <style name="LoadingTheme" parent="AppTheme">
+        <item name="android:windowBackground">@drawable/img_spjm_beijing</item>
+        <item name="colorPrimary">@color/transparent</item>
+        <item name="colorPrimaryDark">@color/transparent</item>
+        <item name="android:windowTranslucentStatus">true</item>
+    </style>
+</resources>

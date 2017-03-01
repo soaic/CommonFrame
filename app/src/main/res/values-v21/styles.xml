@@ -1,14 +1,6 @@
 <resources>
-
-    <!--<style name="AppTheme" parent="android:Theme.Material.Light">-->
-        <!--&lt;!&ndash; Customize your theme here. &ndash;&gt;-->
-        <!--<item name="android:colorPrimary">@color/colorPrimary</item>-->
-        <!--<item name="android:colorPrimaryDark">@color/colorPrimary</item>-->
-        <!--<item name="android:colorAccent">@color/colorAccent</item>-->
-        <!--<item name="android:textColorPrimary">@color/white</item>-->
-        <!--<item name="android:windowBackground">@color/white</item>-->
-        <!--<item name="android:navigationBarColor">@color/transparent</item>-->
-    <!--</style>-->
+    <!-- 5.0 -->
+    <style name="AppTheme" parent="@style/BaseAppTheme"/>
     
     <style name="ripple_style_1">
         <item name="android:background">?android:attr/selectableItemBackground</item>

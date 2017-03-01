@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+        android:color="@color/colorItemPress">
+    <item>
+        <layer-list >
+            <item >
+                <shape
+                    android:shape="rectangle">
+                    <solid android:color="@color/colorItemNormal" />
+                    <corners android:radius="4dp"/>
+                </shape>
+            </item>
+
+            <item>
+                <shape
+                    android:shape="rectangle">
+                    <solid android:color="@color/colorItemNormal" />
+                    <corners android:bottomLeftRadius="4dp"/>
+                </shape>
+            </item>
+
+        </layer-list>
+    </item>
+</ripple>

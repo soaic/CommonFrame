@@ -61,7 +61,7 @@ public class MaterialActivity extends AppCompatActivity{
             mDatas.add(new User(null,"userName="+i));
         }
 
-        recyclerview = (RecyclerView)findViewById(R.id.recycler_view);
+        recyclerview = (RecyclerView)findViewById(R.id.recyclerViewTest);
         //设置布局管理器
         layoutManager = new LinearLayoutManager(this);
         recyclerview.setLayoutManager(layoutManager);
@@ -79,6 +79,7 @@ public class MaterialActivity extends AppCompatActivity{
         View view = LayoutInflater.from(this).inflate(R.layout.layout_material_heater_or_footer,recyclerview,false);
         View view2 = LayoutInflater.from(this).inflate(R.layout.layout_material_heater_or_footer,recyclerview,false);
         mHeaderAndFooterWrapper.addHeaderView(view);
+        //不能同时设置loadMoreView
         //mHeaderAndFooterWrapper.addFootView(view2);
 
         //设置上拉自动加载
@@ -133,7 +134,7 @@ public class MaterialActivity extends AppCompatActivity{
         //toolbar.setLogo(R.mipmap.ic_launcher);//设置logo
         setTitle("Material Design");//设置标题
         toolbar.setSubtitle("Design");//设置副标题，在标题下面
-        toolbar.setNavigationIcon(R.mipmap.ic_launcher); //设置返回按钮
+        toolbar.setNavigationIcon(R.drawable.icon_back); //设置返回按钮
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

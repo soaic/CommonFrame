@@ -10,22 +10,49 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".HtmlActivity">
+        android:supportsRtl="true">
+        <activity
+            android:name=".LoadingActivity"
+            android:theme="@style/LoadingTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".greendao.GreenDaoDemoActivity"/>
-        <activity android:name=".glide.GlideDemoActivity"/>
-        <activity android:name=".mvp.ui.activity.MainActivity"/>
-        <activity android:name=".material.MaterialActivity">
+        <activity
+            android:name=".greendao.GreenDaoDemoActivity"
+            android:theme="@style/AppTheme"/>
+        <activity
+            android:name=".glide.GlideDemoActivity"
+            android:theme="@style/AppTheme"/>
+        <activity
+            android:name=".mvp.ui.activity.MainActivity"
+            android:theme="@style/AppTheme"/>
+        <activity
+            android:name=".base.WebBrowserActivity"
+            android:theme="@style/AppTheme">
         </activity>
-        <activity android:name=".IndexActivity"/>
-        <activity android:name=".base.WebBrowserActivity">
+        <activity
+            android:name=".scroller.ScrollerActivity"
+            android:theme="@style/AppTheme">
+        </activity>
+        <activity
+            android:name=".IndexActivity"
+            android:theme="@style/AppTheme"/>
+        <activity
+            android:name=".material.MaterialActivity"
+            android:theme="@style/AppTheme"/>
+        <activity
+            android:name=".fragment.FragmentActivity"
+            android:theme="@style/AppTheme"/>
+        <activity
+            android:name=".glide.PhotoActivity"
+            android:theme="@style/AppTheme">
+        </activity>
+        <activity 
+            android:name=".baseview.BaseViewActivity"
+            android:theme="@style/AppTheme">
         </activity>
     </application>
 

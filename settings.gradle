@@ -1,1 +1,1 @@
-include ':app', ':httplibrary', ':imagelibrary', ':commonlibrary', ':greendaolibrary', ':baseadapterlibrary'
+include ':app', ':httplibrary', ':imagelibrary', ':commonlibrary', ':greendaolibrary', ':baseadapterlibrary', ':AndroidLibrary'

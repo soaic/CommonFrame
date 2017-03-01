@@ -16,5 +16,5 @@
         style="?android:attr/progressBarStyleHorizontal"
         android:max="100"
         android:progress="1" 
-        android:progressDrawable="@drawable/base_horizontal_progress_style"/>
+        android:progressDrawable="@drawable/base_horizontal_progress_list"/>
 </FrameLayout>

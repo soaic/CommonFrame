@@ -1,6 +1,6 @@
 package com.commonframe.mvp.presenter;
 
-import com.commonframe.base.BasePresenter;
+import com.commonframe.base.MVPBasePresenter;
 import com.commonframe.mvp.entity.PostQueryInfo;
 import com.commonframe.mvp.model.PostSearchModelImpl;
 import com.commonframe.mvp.model.impl.PostSearchModel;
@@ -10,7 +10,7 @@ import com.commonframe.mvp.view.MainView;
  * Created by XiaoSai on 2016/11/10.
  */
 
-public class PostPresenter extends BasePresenter<MainView>{
+public class PostPresenter extends MVPBasePresenter<MainView>{
     private PostSearchModel postSearchModel;
     public PostPresenter(MainView mainView){
         attach(mainView);

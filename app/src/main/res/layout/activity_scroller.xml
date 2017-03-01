@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.commonframe.scroller.ScrollerLayout
+    android:id="@+id/activity_scroller"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.commonframe.scroller.ScrollerActivity">
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:text="This is first child view"
+        android:gravity="center"
+        android:clickable="true"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:text="This is second child view"
+        android:gravity="center"
+        android:clickable="true"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:text="This is third child view"
+        android:gravity="center"
+        android:clickable="true"/>
+
+</com.commonframe.scroller.ScrollerLayout>

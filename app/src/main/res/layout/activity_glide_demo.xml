@@ -10,12 +10,14 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
+    android:background="@color/colorBackground"
     tools:context="com.commonframe.glide.GlideDemoActivity">
     
     <ImageView
         android:id="@+id/image_view"
         android:layout_width="100dp"
-        android:layout_height="100dp"/>
+        android:layout_height="100dp"
+        android:transitionName="@string/app_name"/>
 
     <TextView
         android:id="@+id/glide_cache_tv"
