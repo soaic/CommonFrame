@@ -1,12 +1,10 @@
 package com.commonframe.base;
 
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +23,10 @@ import com.commonframe.R;
  * 3. 提供头部所有操作方法 
  * 4. 提供隐藏头部方法 hideTopView() 默认显示 
  * 5. 提供请求错误点击重试功能 handleRequestError()
- * Created by XiaoSai on 2017/2/22.
+ *
+ * @version V1.0
+ * @since 2017.02.22
+ * @author XiaoSai
  */
 public abstract class BaseActivity extends AppCompatActivity{
     /**

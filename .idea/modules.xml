@@ -8,8 +8,8 @@
       <module fileurl="file://$PROJECT_DIR$/baseadapterlibrary/baseadapterlibrary.iml" filepath="$PROJECT_DIR$/baseadapterlibrary/baseadapterlibrary.iml" />
       <module fileurl="file://$PROJECT_DIR$/commonlibrary/commonlibrary.iml" filepath="$PROJECT_DIR$/commonlibrary/commonlibrary.iml" />
       <module fileurl="file://$PROJECT_DIR$/greendaolibrary/greendaolibrary.iml" filepath="$PROJECT_DIR$/greendaolibrary/greendaolibrary.iml" />
-      <module fileurl="file://$PROJECT_DIR$/httplibrary/httplibrary.iml" filepath="$PROJECT_DIR$/httplibrary/httplibrary.iml" />
       <module fileurl="file://$PROJECT_DIR$/imagelibrary/imagelibrary.iml" filepath="$PROJECT_DIR$/imagelibrary/imagelibrary.iml" />
+      <module fileurl="file://$PROJECT_DIR$/netlibrary/netlibrary.iml" filepath="$PROJECT_DIR$/netlibrary/netlibrary.iml" />
     </modules>
   </component>
 </project>

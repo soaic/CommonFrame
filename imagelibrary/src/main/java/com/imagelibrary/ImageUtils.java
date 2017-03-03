@@ -1,6 +1,7 @@
 package com.imagelibrary;
 
 import android.content.Context;
+import android.os.Handler;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -166,6 +167,22 @@ public class ImageUtils{
         if(curDrawableRequestBuilder!=null){
             curDrawableRequestBuilder.into(imageView);
             curDrawableRequestBuilder = null;
+        }
+    }
+    
+    /**
+     * 显示到ImageView上
+     * @param imageView
+     */
+    public void display(final ImageView imageView,Handler handler){
+        if(curDrawableRequestBuilder!=null){
+            handler.post(new Runnable(){
+                @Override
+                public void run(){
+                    curDrawableRequestBuilder.into(imageView);
+                    curDrawableRequestBuilder = null;
+                }
+            });
         }
     }
 

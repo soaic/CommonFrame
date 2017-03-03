@@ -1,10 +1,8 @@
-package com.httplibrary.util;
+package com.netlibrary.util;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-
-import com.httplibrary.base.JinLib;
 
 /**
  * 
@@ -17,9 +15,9 @@ public class AppUtil {
      *
      * @return true, if is network available
      */
-    public static boolean isNetworkAvailable() {
+    public static boolean isNetworkAvailable(Context context) {
         try {
-            ConnectivityManager connectivityManager=(ConnectivityManager) JinLib.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+            ConnectivityManager connectivityManager=(ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
             if (networkInfo!=null&&networkInfo.isConnected()) {
                 // 当前网络是否已经连接  

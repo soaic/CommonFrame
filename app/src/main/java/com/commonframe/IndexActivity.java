@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.commonframe.base.BaseActivity;
 import com.commonframe.baseview.BaseViewActivity;
+import com.commonframe.baseview.WebActivity;
 import com.commonframe.fragment.FragmentActivity;
 import com.commonframe.glide.GlideDemoActivity;
 import com.commonframe.greendao.GreenDaoDemoActivity;
@@ -93,6 +94,15 @@ public class IndexActivity extends BaseActivity{
             @Override
             public void onClick(View view){
                 startActivity(new Intent(getApplicationContext(),BaseViewActivity.class));
+            }
+        });
+
+        getViewById(R.id.index2).setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                Intent intent = new Intent(getApplicationContext(),WebActivity.class);
+                intent.putExtra(WebActivity.INTENT_URL,"http://xiaosai.me/");
+                startActivity(intent);
             }
         });
     }

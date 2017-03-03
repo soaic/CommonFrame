@@ -24,7 +24,10 @@ import com.commonframe.R;
  * 3. 提供头部所有操作方法 
  * 4. 提供显示头部方法 showTopView() 默认为隐藏  
  * 5. 提供请求错误点击重试功能 handleRequestError()
- * Created by XiaoSai on 2017/2/24.
+ * 
+ * @version V1.0
+ * @since 2017.02.24
+ * @author XiaoSai
  */
 public abstract class BaseFragment extends Fragment{
     /**

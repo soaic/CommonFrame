@@ -1,4 +1,4 @@
-package com.httplibrary.util;
+package com.netlibrary.util;
 
 /**
  * Created by xs on 2016/10/31.
@@ -6,7 +6,7 @@ package com.httplibrary.util;
 public class StringUtil {
     /**
      * 字符串拼接  线程安全
-     * @param
+     * @param 
      * @return
      */
     public static String buffer(String... array){
@@ -18,7 +18,7 @@ public class StringUtil {
     }
     /**
      * 字符串拼接 线程不安全 效率高
-     * @param
+     * @param 
      * @return
      */
     public static String builder(String... array){

@@ -1,6 +1,4 @@
-package com.httplibrary.interceptor;
-
-import android.util.Log;
+package com.netlibrary.interceptor;
 
 import java.io.EOFException;
 import java.io.IOException;

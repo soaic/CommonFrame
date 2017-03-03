@@ -1,9 +1,9 @@
 package com.commonframe;
 
 import android.app.Application;
+import android.content.Context;
 
 import com.greendao.utils.DbCore;
-import com.httplibrary.base.JinLib;
 
 /**
  * @author XiaoSai
@@ -13,14 +13,26 @@ import com.httplibrary.base.JinLib;
  * @copyright: Copyright (c) 2016
  */
 public class App extends Application{
+    
+    private static App app;
+    
     @Override
     public void onCreate(){
         super.onCreate();
-        //初始化imageLibrary
-        JinLib.initialize(this);
+        
+        app = this;
+        
+        //检测UI性能
+        //BlockDetectByPrinter.start();
+        
         //初始化greenDaoLibrary
         DbCore.init(this);
         //启用sql日志
         DbCore.enableQueryBuilderLog();
+        
+    }
+
+    public static Context getContext(){
+        return app.getApplicationContext();
     }
 }

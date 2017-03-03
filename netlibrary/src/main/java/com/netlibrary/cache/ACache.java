@@ -1,4 +1,4 @@
-package com.httplibrary.cache;
+package com.netlibrary.cache;
 
 /**
  * Created by xs on 2016/10/31.
@@ -34,8 +34,6 @@ import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
-import com.httplibrary.base.JinLib;
-
 
 /**
  * 缓存工具类，可以缓存String JSONObject JSONArray Bitmap Drawable  以及系列化对象 ;
@@ -50,17 +48,12 @@ public class ACache {
     private static final int MAX_COUNT = Integer.MAX_VALUE; // 不限制存放数据的数量
     private static Map<String, ACache> mInstanceMap = new HashMap<String, ACache>();
     private ACacheManager mCache;
-    public static ACache get() {
-        return get(JinLib.getContext(), "ACache");
+    public static ACache get(Context context) {
+        return get(context, "ACache");
     }
 
-    public static ACache get(String cacheName) {
-        return get(JinLib.getContext(), cacheName);
-    }
-
-
-    public static ACache get(Context ctx, String cacheName) {  //更改为非缓存
-        File f = new File(ctx.getFilesDir(), cacheName);
+    public static ACache get(Context context, String cacheName) {  //更改为非缓存
+        File f = new File(context.getFilesDir(), cacheName);
         return get(f, MAX_SIZE, MAX_COUNT);
     }
 

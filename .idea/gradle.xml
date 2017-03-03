@@ -13,8 +13,8 @@
             <option value="$PROJECT_DIR$/baseadapterlibrary" />
             <option value="$PROJECT_DIR$/commonlibrary" />
             <option value="$PROJECT_DIR$/greendaolibrary" />
-            <option value="$PROJECT_DIR$/httplibrary" />
             <option value="$PROJECT_DIR$/imagelibrary" />
+            <option value="$PROJECT_DIR$/netlibrary" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

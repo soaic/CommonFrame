@@ -30,10 +30,6 @@
             android:name=".mvp.ui.activity.MainActivity"
             android:theme="@style/AppTheme"/>
         <activity
-            android:name=".base.WebBrowserActivity"
-            android:theme="@style/AppTheme">
-        </activity>
-        <activity
             android:name=".scroller.ScrollerActivity"
             android:theme="@style/AppTheme">
         </activity>
@@ -50,8 +46,12 @@
             android:name=".glide.PhotoActivity"
             android:theme="@style/AppTheme">
         </activity>
-        <activity 
+        <activity
             android:name=".baseview.BaseViewActivity"
+            android:theme="@style/AppTheme">
+        </activity>
+        <activity 
+            android:name=".baseview.WebActivity"
             android:theme="@style/AppTheme">
         </activity>
     </application>
