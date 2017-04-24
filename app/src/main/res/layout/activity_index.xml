@@ -115,5 +115,19 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="0.1dp"
+        android:background="@color/color_E8E8E8"/>    
+    
+    <TextView
+        android:id="@+id/index3"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="RecyclerViewDemoActivity Demo"
+        android:gravity="center"
+        android:textColor="#000"
+        style="@style/ripple_style_1"
+        android:background="@drawable/item_white_selector"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
         android:background="@color/color_E8E8E8"/>
 </LinearLayout>

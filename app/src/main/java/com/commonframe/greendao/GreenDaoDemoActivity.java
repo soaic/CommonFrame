@@ -136,6 +136,7 @@ public class GreenDaoDemoActivity extends Activity{
         if(TextUtils.isEmpty(userName)){
             return;
         }
+        
         //List<User> users = UserService.getInstance().getDao().queryBuilder().where(UserDao.Properties.Name.like("%"+userName+"%")).build().list();
         //List<User> users = UserService.getInstance().getDao().queryBuilder().where(new WhereCondition.PropertyCondition(UserDao.Properties.Name, " LIKE ?", "%"+userName+"%")).build().list();
         UserService.getInstance().getQueryBuilder().where(new WhereCondition.PropertyCondition(UserDao.Properties.UserName, " LIKE ?", "%"+userName+"%")).rx().list()

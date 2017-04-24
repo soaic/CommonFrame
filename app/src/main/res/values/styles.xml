@@ -53,5 +53,11 @@
         <item name="android:activityCloseEnterAnimation">@anim/slide_in_from_left</item>
         <item name="android:activityCloseExitAnimation">@anim/slide_out_to_right</item>
     </style>
+
+    <!-- 底部弹出对话框动画 -->
+    <style name="AnimationBottomDialog" parent="android:Animation">
+        <item name="@android:windowEnterAnimation">@anim/dialog_enter_bottom</item>
+        <item name="@android:windowExitAnimation">@anim/dialog_exit_bottom</item>
+    </style>
     
 </resources>

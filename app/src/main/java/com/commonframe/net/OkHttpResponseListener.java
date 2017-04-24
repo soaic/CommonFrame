@@ -1,18 +1,14 @@
-package com.netlibrary.listener;
-
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
+package com.commonframe.net;
 
 /**
- * 网络请求监听
- * Created by XiaoSai on 2016/11/3.
+ * TODO
+ *
+ * @author XiaoSai
+ * @version V1.0
+ * @since 2017/3/8.
  */
-public abstract class OnResultListener<T> {
-    public Type type;
-    
-    public OnResultListener(){
-        type = ((ParameterizedType)getClass().getGenericSuperclass()).getActualTypeArguments()[0];
-    }
+
+public abstract class OkHttpResponseListener<T>{
 
     /** 是否缓存 true缓存 false不缓存 默认不缓存*/
     public boolean onCache(T cache){
@@ -27,5 +23,4 @@ public abstract class OnResultListener<T> {
 
     /** 请求失败 根据需求实现，当请求异常时，需要使用缓存时，调用此方法*/
     public void onFailure(Throwable err, T cache){}
-
 }

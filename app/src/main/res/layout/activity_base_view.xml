@@ -19,6 +19,7 @@
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
         style="?android:attr/borderlessButtonStyle"
+        android:textSize="@dimen/size_16"
         android:background="@drawable/button_white_selector"/>
     
     <TextView
@@ -28,6 +29,7 @@
         android:gravity="center"
         android:text="对话框底部按钮"
         android:textColor="@color/black"
+        android:textSize="@dimen/size_16"
         android:clickable="true"
         android:background="@drawable/dialog_bottom_selector"/>
 
@@ -39,6 +41,7 @@
         android:gravity="center"
         android:text="对话框底部左边按钮"
         android:textColor="@color/black"
+        android:textSize="@dimen/size_16"
         android:clickable="true"
         android:background="@drawable/dialog_bottom_left_selector"/>
 
@@ -49,7 +52,20 @@
         android:gravity="center"
         android:text="对话框底部右边按钮"
         android:textColor="@color/black"
+        android:textSize="@dimen/size_16"
         android:clickable="true"
         android:background="@drawable/dialog_bottom_right_selector"/>
+    
+    <TextView
+        android:id="@+id/select_photo"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:text="选择图片"
+        android:textColor="@color/black"
+        android:textSize="@dimen/size_16"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        style="?android:attr/borderlessButtonStyle"
+        android:background="@drawable/button_white_selector"/>
     
 </LinearLayout>

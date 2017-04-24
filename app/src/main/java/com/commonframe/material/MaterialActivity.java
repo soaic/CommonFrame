@@ -124,6 +124,8 @@ public class MaterialActivity extends AppCompatActivity{
         recyclerview.setItemAnimator(new DefaultItemAnimator());
         //添加分割线
         recyclerview.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
+        
+        
 
     }
 

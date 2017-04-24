@@ -13,8 +13,9 @@ import com.netlibrary.util.StringUtil;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
+import java.net.ConnectException;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Cache;
@@ -36,19 +37,18 @@ import rx.schedulers.Schedulers;
  */
 
 public class NetClient{
-    private static String BASE_URL = "";
+    private String mBaseUrl= "";
     private Builder mBuilder;
-    private String cacheKey;
+    private String mCacheKey;
     private String mCache;
-    private Retrofit retrofit;
+    private Retrofit mRetrofit;
     private Observable<ResponseBody> mCall;
-    public static final int OBJECT = 1;//返回数据为json对象
-    public static final int STRING = 0;//返回数据为字符串
-    private Gson gson;
-    private static Context context;
+    private Gson mGson;
+    private static Context mContext;
+    private OkHttpClient mClient;
 
     private NetClient(){
-        if(context == null){
+        if(mContext == null){
             throw new IllegalArgumentException("context can't be null");
         }
 
@@ -56,94 +56,143 @@ public class NetClient{
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
-        OkHttpClient client = new OkHttpClient.Builder()
+        mClient = new OkHttpClient.Builder()
                 .connectTimeout(10000L,TimeUnit.MILLISECONDS)       //设置连接超时
                 .readTimeout(10000L,TimeUnit.MILLISECONDS)          //设置读取超时
                 .writeTimeout(10000L, TimeUnit.MILLISECONDS)         //设置写入超时
                 .sslSocketFactory(OkHttpSSLSocketFactory.getSocketFactory(),OkHttpSSLSocketFactory.getTrustManager())
                 .hostnameVerifier(OkHttpSSLSocketFactory.getHostnameVerifier())
-                .cookieJar(new CookiesManager(context))
-                .cache(new Cache(context.getCacheDir(),10 * 1024 * 1024))   //设置缓存目录和10M缓存
+                .cookieJar(new CookiesManager(mContext))
+                .cache(new Cache(mContext.getCacheDir(),10 * 1024 * 1024))   //设置缓存目录和10M缓存
                 .addInterceptor(interceptor)    //添加日志拦截器（该方法也可以设置公共参数，头信息）
                 .build();
 
-        gson = new Gson();
-        
-        retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .client(client)
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())   //添加RxJava
-                .build();
+        mGson = new Gson();
     }
     
     private static NetClient getInstance(){
         return SingleLoader.INSTANCE;
     }
-    
     private static class SingleLoader{
         public static NetClient INSTANCE = new NetClient();
-    }    
-
-    private void setBuilder(Builder builder) {
-        this.mBuilder = builder;
-        this.cacheKey = StringUtil.buffer(builder.url, builder.params.toString());
-        this.mCache= ACache.get(context).getAsString(cacheKey);
     }
-    
-    /**
-     * POST请求
-     *  @param onResultListener 响应监听
-     */
-    public void post(final OnResultListener onResultListener){
+    private void initData(Builder builder) {
+        this.mBuilder = builder;
+        this.mCacheKey = StringUtil.buffer(builder.url, builder.params.toString());
+        this.mCache= ACache.get(mContext).getAsString(mCacheKey);
         
-        if (onResultListener.onCache(mCache)) return;
-        if (parseCache(mCache,onResultListener)) return;
-        if (!AppUtil.isNetworkAvailable(context)) {
-            handlerError("无法连接网络",onResultListener);
-            return;
+        //如果和上次baseUrl不同，则重新创建retrofit
+        if(!mBaseUrl.equals(builder.baseUrl)){
+            mBaseUrl = builder.baseUrl;
+            mRetrofit = new Retrofit.Builder()
+                    .baseUrl(mBaseUrl)
+                    .client(mClient)
+                    .addCallAdapterFactory(RxJavaCallAdapterFactory.create())   //添加RxJava
+                    .build();
         }
-
-        mCall =retrofit.create(Params.class)
-                .paramsPost(mBuilder.url, mBuilder.params);
-
-        request(onResultListener);
+        
     }
 
     /**
      * GET请求
      */
-    public void get(final OnResultListener onResultListener){
-        if (onResultListener.onCache(mCache)) return;
-
+    public <T> void get(final OnResultListener<T> onResultListener){
+        if (onResultListener.onCache((T)mCache)) return;
         if (parseCache(mCache,onResultListener)) return;
-
-        if (!AppUtil.isNetworkAvailable(context)) {
-            handlerError("无法连接网络",onResultListener);
+        if (!AppUtil.isNetworkAvailable(mContext)) {
+            handlerError(new ConnectException("无法连接网络!"),onResultListener);
             return;
         }
-
-        mCall =retrofit.create(Params.class)
+        mCall = mRetrofit.create(Params.class)
                 .paramsGet(mBuilder.url, mBuilder.params);
-        
+        request(onResultListener);
+    }
+    
+    /**
+     * POST请求
+     * @param onResultListener 响应监听
+     */
+    public <T> void post(final OnResultListener<T> onResultListener){
+        if (onResultListener.onCache((T)mCache)) return;
+        if (parseCache(mCache,onResultListener)) return;
+        if (!AppUtil.isNetworkAvailable(mContext)) {
+            handlerError(new ConnectException("无法连接网络!"),onResultListener);
+            return;
+        }
+        mCall = mRetrofit.create(Params.class)
+                .paramsPost(mBuilder.url, mBuilder.params);
         request(onResultListener);
     }
 
     /**
-     * upload上传图片请求
+     * post upload上传图片请求
      */
-    public void upload(final OnResultListener onResultListener){
-        if (onResultListener.onCache(mCache)) return;
-
+    public <T> void postUpload(final OnResultListener<T> onResultListener){
+        if (onResultListener.onCache((T)mCache)) return;
         if (parseCache(mCache,onResultListener)) return;
-
-        if (!AppUtil.isNetworkAvailable(context)) {
-            handlerError("无法连接网络",onResultListener);
+        if (!AppUtil.isNetworkAvailable(mContext)) {
+            handlerError(new ConnectException("无法连接网络!"),onResultListener);
             return;
         }
+        //Post传参
+        for(String key : mBuilder.params.keySet()){
+            RequestBody value = RequestBody.create(MediaType.parse("text/plain"), mBuilder.params.get(key));
+            mBuilder.files.put(key,value);
+        }
+        mCall = mRetrofit.create(Params.class)
+                .paramsPostUpload(mBuilder.url, mBuilder.files);
+        request(onResultListener);
+    }
 
-        mCall =retrofit.create(Params.class)
-                .paramsUpload(mBuilder.url, mBuilder.params,mBuilder.files);
+    /**
+     * put请求
+     * @param onResultListener 响应监听
+     */
+    public <T> void put(final OnResultListener<T> onResultListener){
+        if (onResultListener.onCache((T)mCache)) return;
+        if (parseCache(mCache,onResultListener)) return;
+        if (!AppUtil.isNetworkAvailable(mContext)) {
+            handlerError(new ConnectException("无法连接网络!"),onResultListener);
+            return;
+        }
+        mCall = mRetrofit.create(Params.class)
+                .paramsPut(mBuilder.url, mBuilder.params);
+        request(onResultListener);
+    }
 
+    /**
+     * put upload上传图片请求
+     */
+    public <T> void putUpload(final OnResultListener<T> onResultListener){
+        if (onResultListener.onCache((T)mCache)) return;
+        if (parseCache(mCache,onResultListener)) return;
+        if (!AppUtil.isNetworkAvailable(mContext)) {
+            handlerError(new ConnectException("无法连接网络!"),onResultListener);
+            return;
+        }
+        //Post传参
+        for(String key : mBuilder.params.keySet()){
+            RequestBody value = RequestBody.create(MediaType.parse("text/plain"), mBuilder.params.get(key));
+            mBuilder.files.put(key,value);
+        }
+        mCall = mRetrofit.create(Params.class)
+                .paramsPutUpload(mBuilder.url, mBuilder.files);
+        request(onResultListener);
+    }
+
+    /**
+     * delete请求
+     * @param onResultListener 响应监听
+     */
+    public <T> void delete(final OnResultListener<T> onResultListener){
+        if (onResultListener.onCache((T)mCache)) return;
+        if (parseCache(mCache,onResultListener)) return;
+        if (!AppUtil.isNetworkAvailable(mContext)) {
+            handlerError(new ConnectException("无法连接网络!"),onResultListener);
+            return;
+        }
+        mCall = mRetrofit.create(Params.class)
+                .paramsDelete(mBuilder.url, mBuilder.params);
         request(onResultListener);
     }
     
@@ -152,7 +201,7 @@ public class NetClient{
      * 请求
      * @param onResultListener 响应监听
      */
-    private void request(final OnResultListener onResultListener){
+    private <T> void request(final OnResultListener<T> onResultListener){
         //访问网络切换异步线程
         mCall.subscribeOn(Schedulers.io())
             //响应结果处理切换成主线程
@@ -165,18 +214,18 @@ public class NetClient{
                 @Override
                 public void onError(Throwable e){
                     e.printStackTrace();
-                    handlerError("网络繁忙，请稍后重试！",onResultListener);
+                    handlerError(e ,onResultListener);
                 }
 
                 @Override
                 public void onNext(ResponseBody response){
                     try {
                         String result = response.string();
-                        ACache.get(context).put(cacheKey, result);
-                        parseJson(result,onResultListener);
+                        ACache.get(mContext).put(mCacheKey, result);
+                        parseSuccess(result,onResultListener);
                     } catch (IOException e) {
                         e.printStackTrace();
-                        handlerError("处理数据失败!",onResultListener);
+                        handlerError(e ,onResultListener);
                     }
                 }
             });
@@ -184,64 +233,55 @@ public class NetClient{
 
     /**
      * 处理网络异常
-     * @param message
+     * @param err
      * @param onResultListener
      */
-    private void handlerError(String message,OnResultListener onResultListener){
-        onResultListener.onFailure(message);
-        onResultListener.onFailure(mCache,message);
-        parseFails(mCache,message,onResultListener);
+    private <T> void handlerError(Throwable err, OnResultListener<T> onResultListener){
+        parseFails(err, mCache, onResultListener);
     }
 
     /**
-     * 缓存处理
+     * 缓存数据转换处理
      * @param json
      * @param onResultListener
      * @return
      */
-    private boolean parseCache(String json,OnResultListener onResultListener){
-        switch (mBuilder.bodyType){
-            case OBJECT:
-                return onResultListener.onCache(gson.fromJson(mCache,mBuilder.clazz));
-            case STRING:
-                return onResultListener.onCache(json);
-            default:
-                return false;
-        }
+    private <T> boolean parseCache(String json,OnResultListener<T> onResultListener){
+        return onResultListener.onCache((T)mGson.fromJson(mCache,onResultListener.type));
     }
 
-    private void parseFails(String json,String error,OnResultListener onResultListener){
-        switch (mBuilder.bodyType){
-            case OBJECT:
-                onResultListener.onFailure(gson.fromJson(mCache,mBuilder.clazz),error);
-                break;
-            case STRING:
-                onResultListener.onFailure(json,error);
-                break;
-        }
+    /**
+     * 失败数据转换处理
+     * @param err
+     * @param json
+     * @param onResultListener
+     * @param <T>
+     */
+    private <T> void parseFails(Throwable err, String json, OnResultListener<T> onResultListener){
+        onResultListener.onFailure(err,(T)mGson.fromJson(mCache,onResultListener.type));
+        onResultListener.onFailure(err);
     }
 
-    private void parseJson(String json,OnResultListener onResultListener){
-        switch (mBuilder.bodyType){
-            case OBJECT:
-                onResultListener.onSuccess(gson.fromJson(json,mBuilder.clazz));
-                break;
-            case STRING:
-                onResultListener.onSuccess(json);
-                break;
-        }
+    /**
+     * 成功数据转换
+     * @param json
+     * @param onResultListener
+     * @param <T>
+     */
+    private <T> void parseSuccess(String json,OnResultListener<T> onResultListener){
+        onResultListener.onSuccess((T)mGson.fromJson(json,onResultListener.type));
     }
 
+    /**
+     * 建造类 
+     */
     public static final class Builder{
         private String baseUrl = "";
-        private int bodyType = 0;//返回数据的类型,默认字符串
         private String url = "";
-        private Map<String,String> params = new HashMap<>(); //ArrayMap是牺牲了时间换区空间,数据小用HashMap,数据大用ArrayMap
-        private Map<String,RequestBody> files = new HashMap<>();
-        private boolean hasShowLoading = false;
-        private Class clazz; 
+        private Map<String,String> params = new ConcurrentHashMap<>(); //ConcurrentHashMap线程安全,ArrayMap是牺牲了时间换区空间,数据小用HashMap,数据大用ArrayMap
+        private Map<String,RequestBody> files = new ConcurrentHashMap<>();
         
-        public Builder(Context bdContext){ context = bdContext; }
+        public Builder(Context bdContext){ mContext = bdContext; }
         
         public Builder baseUrl(String baseUrl){
             this.baseUrl = baseUrl;
@@ -258,41 +298,26 @@ public class NetClient{
             return this;
         }
 
+        public Builder params(Map<String,String> maps){
+            params.putAll(maps);
+            return this;
+        }
+
+        public Builder files(Map<String,File> mapFiles){
+            for(String key : mapFiles.keySet()){
+                files.put(key+"\"; filename=\""+mapFiles.get(key).getName(), RequestBody.create(MediaType.parse("application/octet-stream"), mapFiles.get(key)));
+            }
+            return this;
+        }
+
         public Builder file(String key, File file){
             files.put(key+"\"; filename=\""+file.getName(), RequestBody.create(MediaType.parse("application/octet-stream"), file));
             return this;
         }
-
-        public <T> Builder bodyType(int bodyType,Class<T> clazz) {
-            this.bodyType = bodyType;
-            this.clazz = clazz;
-            return this;
-        }
-
-        public Builder hasShowLoading(boolean hasShowLoading) {
-            this.hasShowLoading = hasShowLoading;
-            return this;
-        }
         
-        public NetClient build(){
-            BASE_URL = baseUrl;
-            handlerCommonParam();
-            NetClient.getInstance().setBuilder(this);
+        public NetClient build(){            
+            NetClient.getInstance().initData(this);
             return NetClient.getInstance();
         }
-
-        /**
-         * 处理公共参数
-         */
-        private void handlerCommonParam(){
-            params.put("uid","10000524");
-            params.put("os","2");//1:ios 2:android
-            params.put("app_ver","32");//版本编号
-            params.put("timestamp", "" + System.currentTimeMillis() / 1000);//时间戳
-        }
     }
-
-
-     
-
 }

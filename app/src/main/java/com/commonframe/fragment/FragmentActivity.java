@@ -36,8 +36,10 @@ public class FragmentActivity extends BaseActivity{
         bottom_navigation_bar.setMode(BottomNavigationBar.MODE_FIXED);
         bottom_navigation_bar
                 .setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_STATIC);
+        
         bottom_navigation_bar.setInActiveColor(R.color.gray);
         bottom_navigation_bar.setActiveColor(R.color.orange);
+        bottom_navigation_bar.setAnimation(null);
         
         bottom_navigation_bar
                 .addItem(new BottomNavigationItem(R.drawable.icon_biaoqianlan_qiyequan02, "企业").setBadgeItem(numberBadgeItem))

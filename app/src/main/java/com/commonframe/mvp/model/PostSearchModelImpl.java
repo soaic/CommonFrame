@@ -1,11 +1,13 @@
 package com.commonframe.mvp.model;
 
-import com.commonframe.App;
 import com.commonframe.common.C;
 import com.commonframe.mvp.entity.PostQueryInfo;
 import com.commonframe.mvp.model.impl.PostSearchModel;
-import com.netlibrary.listener.OnResultListener;
-import com.netlibrary.NetClient;
+import com.commonframe.net.OkHttpResponseListener;
+import com.commonframe.net.RequestClient;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author XiaoSai
@@ -17,25 +19,20 @@ import com.netlibrary.NetClient;
 public class PostSearchModelImpl implements PostSearchModel{
     @Override
     public void requestPostSearch(String type, String postid, final PostSearchCallback callback) {
-        new NetClient.Builder(App.getContext())
-                .baseUrl(C.impl.base_url)
-                .url(C.impl.search_post)
-                .param("type",type)
-                .param("postid",postid)
-                .bodyType(NetClient.OBJECT,PostQueryInfo.class) //当要得到已经解析完成的实体类时，添加此方法即可
-                .build()
-                .post(new OnResultListener<PostQueryInfo>(){
-                    @Override
-                    public void onSuccess(PostQueryInfo object){
-                        super.onSuccess(object);
-                        callback.requestPostSearchSuccess(object);
-                    }
 
-                    @Override
-                    public void onFailure(String message){
-                        super.onFailure(message);
-                        callback.requestPostSearchFail(message);
-                    }
-                });
+        Map<String,String> maps = new ConcurrentHashMap<>();
+        maps.put("type",type);
+        maps.put("postid",postid);
+        RequestClient.get(C.impl.base_url,C.impl.search_post,maps,new OkHttpResponseListener<PostQueryInfo>(){
+            @Override
+            public void onSuccess(PostQueryInfo content){
+                callback.requestPostSearchSuccess(content);
+            }
+
+            @Override
+            public void onFailure(Throwable err){
+                callback.requestPostSearchFail(err.getMessage());
+            }
+        });
     }
 }

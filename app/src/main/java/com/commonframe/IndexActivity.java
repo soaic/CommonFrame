@@ -16,6 +16,7 @@ import com.commonframe.glide.GlideDemoActivity;
 import com.commonframe.greendao.GreenDaoDemoActivity;
 import com.commonframe.material.MaterialActivity;
 import com.commonframe.mvp.ui.activity.MainActivity;
+import com.commonframe.recyclerview.RecyclerViewDemoActivity;
 import com.commonframe.scroller.ScrollerActivity;
 import com.commonlibrary.BarUtils;
 
@@ -94,6 +95,13 @@ public class IndexActivity extends BaseActivity{
             @Override
             public void onClick(View view){
                 startActivity(new Intent(getApplicationContext(),BaseViewActivity.class));
+            }
+        });        
+        
+        getViewById(R.id.index3).setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                startActivity(new Intent(getApplicationContext(),RecyclerViewDemoActivity.class));
             }
         });
 

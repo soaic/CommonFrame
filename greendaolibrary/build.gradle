@@ -27,14 +27,7 @@ greendao {
     targetGenDir 'src/main/java'
 }
 
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'org.greenrobot:greendao-gradle-plugin:3.2.0'
-    }
-}
+
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
@@ -43,5 +36,5 @@ dependencies {
     compile 'org.greenrobot:greendao:3.2.0'
     compile 'org.greenrobot:greendao-generator:3.2.0'
     compile 'io.reactivex:rxandroid:1.2.1'
-    compile 'io.reactivex:rxjava:1.1.6'
+    compile 'io.reactivex:rxjava:1.2.0'
 }
