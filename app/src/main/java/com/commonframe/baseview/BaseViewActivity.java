@@ -75,6 +75,7 @@ public class BaseViewActivity extends BaseActivity implements CameraCore.CameraR
         RequestClient.post("https://test.gongyebangshou.com:8080/","usr_verflogin.php",maps,new OkHttpResponseListener<String>(){
             @Override
             public void onSuccess(String content){
+                Log.d("test","content="+content);
                 
             }
 
@@ -98,10 +99,10 @@ public class BaseViewActivity extends BaseActivity implements CameraCore.CameraR
                 maps.put("type","1");
                 Map<String,File> files = new HashMap<>();
                 files.put("data",new File(path));
-                RequestClient.postUpload("https://test.gongyebangshou.com:8080/","usr_uploadicon.php",maps,files,new OkHttpResponseListener<String>(){
+                RequestClient.postUpload("https://test.gongyebangshou.com:8080/","usr_uploadicon.php",maps,files,new OkHttpResponseListener<Object>(){
                     @Override
-                    public void onSuccess(String content){
-                        
+                    public void onSuccess(Object content){
+                        Log.d("test","content="+content);
                     }
 
                     @Override

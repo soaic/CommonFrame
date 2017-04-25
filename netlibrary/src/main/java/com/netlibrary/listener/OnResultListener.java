@@ -1,19 +1,17 @@
 package com.netlibrary.listener;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-
 /**
  * 网络请求监听
  * Created by XiaoSai on 2016/11/3.
  */
 public abstract class OnResultListener<T> {
-    public Type type;
     
-    public OnResultListener(){
-        type = ((ParameterizedType)getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+    public Class<T> clazz;
+    
+    public OnResultListener(Class <T> cs){
+        this.clazz = cs;
     }
-
+    
     /** 是否缓存 true缓存 false不缓存 默认不缓存*/
     public boolean onCache(T cache){
         return false;

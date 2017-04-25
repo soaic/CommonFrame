@@ -1,8 +1,10 @@
 package com.netlibrary;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.netlibrary.cache.ACache;
 import com.netlibrary.cookie.CookiesManager;
 import com.netlibrary.https.OkHttpSSLSocketFactory;
@@ -13,6 +15,7 @@ import com.netlibrary.util.StringUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.net.ConnectException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -247,7 +250,11 @@ public class NetClient{
      * @return
      */
     private <T> boolean parseCache(String json,OnResultListener<T> onResultListener){
-        return onResultListener.onCache((T)mGson.fromJson(mCache,onResultListener.type));
+        if(String.class.getName().equals(onResultListener.clazz.getName())){
+            return onResultListener.onCache((T)json);
+        }else{
+            return onResultListener.onCache(mGson.fromJson(json,onResultListener.clazz));
+        }
     }
 
     /**
@@ -258,7 +265,11 @@ public class NetClient{
      * @param <T>
      */
     private <T> void parseFails(Throwable err, String json, OnResultListener<T> onResultListener){
-        onResultListener.onFailure(err,(T)mGson.fromJson(mCache,onResultListener.type));
+        if(String.class.getName().equals(onResultListener.clazz.getName())){
+            onResultListener.onFailure(err,(T)json);
+        }else{
+            onResultListener.onFailure(err,mGson.fromJson(json,onResultListener.clazz));
+        }
         onResultListener.onFailure(err);
     }
 
@@ -269,7 +280,11 @@ public class NetClient{
      * @param <T>
      */
     private <T> void parseSuccess(String json,OnResultListener<T> onResultListener){
-        onResultListener.onSuccess((T)mGson.fromJson(json,onResultListener.type));
+        if(String.class.getName().equals(onResultListener.clazz.getName())){
+            onResultListener.onSuccess((T)json);
+        }else{
+            onResultListener.onSuccess(mGson.fromJson(json,onResultListener.clazz));
+        }
     }
 
     /**

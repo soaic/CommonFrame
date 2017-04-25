@@ -4,8 +4,6 @@ import com.commonframe.App;
 import com.netlibrary.NetClient;
 import com.netlibrary.listener.OnResultListener;
 
-import org.json.JSONObject;
-
 import java.io.File;
 import java.util.Map;
 
@@ -34,7 +32,7 @@ public class RequestClient{
                 .params(maps);
         handlerCommonParam(builder);
         builder.build()
-                .get(new OnResultListener<T>(){
+                .get(new OnResultListener<T>(listener.clazz){
                     @Override
                     public void onSuccess(T content){
                         handlerIntercept(content);
@@ -61,7 +59,7 @@ public class RequestClient{
                 .params(maps);
         handlerCommonParam(builder);
         builder.build()
-                .post(new OnResultListener<T>(){
+                .post(new OnResultListener<T>(listener.clazz){
                     @Override
                     public void onSuccess(T content){
                         handlerIntercept(content);
@@ -90,8 +88,8 @@ public class RequestClient{
      * @param maps 请求文本参数
      * @param files 请求文件参数
      */
-    public static <T> void postUpload(String baseUrl, String url, Map<String,String> maps,
-                                  Map<String,File> files, final OkHttpResponseListener<T> listener){
+    public static <T> void postUpload(String baseUrl,String url,Map<String,String> maps,
+                                      Map<String,File> files,final OkHttpResponseListener<T> listener){
         builder = new NetClient.Builder(App.getContext())
                 .baseUrl(baseUrl)
                 .url(url)
@@ -99,7 +97,7 @@ public class RequestClient{
                 .files(files);
         handlerCommonParam(builder);
         builder.build()
-                .postUpload(new OnResultListener<T>(){
+                .postUpload(new OnResultListener<T>(listener.clazz){
                     @Override
                     public void onSuccess(T content){
                         handlerIntercept(content);

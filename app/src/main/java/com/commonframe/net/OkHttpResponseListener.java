@@ -1,5 +1,7 @@
 package com.commonframe.net;
 
+import java.lang.reflect.ParameterizedType;
+
 /**
  * TODO
  *
@@ -9,6 +11,11 @@ package com.commonframe.net;
  */
 
 public abstract class OkHttpResponseListener<T>{
+    public Class <T> clazz;
+    
+    public OkHttpResponseListener(){
+        clazz = (Class <T>)((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+    }
 
     /** 是否缓存 true缓存 false不缓存 默认不缓存*/
     public boolean onCache(T cache){
