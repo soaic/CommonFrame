@@ -68,40 +68,17 @@ public class BaseViewActivity extends BaseActivity implements CameraCore.CameraR
 
     @Override
     protected void loadData(){
-        Map<String,String> maps = new HashMap<>();
-        maps.put("phone","13113613681");
-        maps.put("login_type","2");
-        maps.put("verfcode","1234");
-        RequestClient.post("https://test.gongyebangshou.com:8080/","usr_verflogin.php",maps,new OkHttpResponseListener<String>(){
-            @Override
-            public void onSuccess(String content){
-                Log.d("test","content="+content);
-                
-            }
 
-            @Override
-            public void onFailure(Throwable err){
-
-            }
-        });
-    }
-
-    @Override
-    public void onCameraSuccess(final String filePath){
-        Log.d("camera","filePath="+filePath);
-        new Thread(new Runnable(){
-            @Override
-            public void run(){
-                String path = SelectPhotoPop.getInstance().getDiskCacheDir(BaseViewActivity.this)+"/1_10000524.jpg";
-                NativeUtil.compressBitmap(NativeUtil.getBitmapFromFile(filePath), path);
-                
-                Map<String,String> maps = new HashMap<>();
-                maps.put("type","1");
-                Map<String,File> files = new HashMap<>();
-                files.put("data",new File(path));
-                RequestClient.postUpload("https://test.gongyebangshou.com:8080/","usr_uploadicon.php",maps,files,new OkHttpResponseListener<Object>(){
+        new RequestClient.Builder()
+                .baseUrl("https://test.gongyebangshou.com:8080/")
+                .url("usr_verflogin.php")
+                .param("phone","13113613681")
+                .param("login_type","2")
+                .param("verfcode","1234")
+                .builder()
+                .get(new OkHttpResponseListener<String>(){
                     @Override
-                    public void onSuccess(Object content){
+                    public void onSuccess(String content){
                         Log.d("test","content="+content);
                     }
 
@@ -110,7 +87,34 @@ public class BaseViewActivity extends BaseActivity implements CameraCore.CameraR
 
                     }
                 });
-                
+    }
+
+    @Override
+    public void onCameraSuccess(final String filePath){
+
+        new Thread(new Runnable(){
+            @Override
+            public void run(){
+                Log.d("camera","filePath="+filePath);
+                String path = SelectPhotoPop.getInstance().getDiskCacheDir(BaseViewActivity.this)+"/1_10000524.jpg";
+                NativeUtil.compressBitmap(NativeUtil.getBitmapFromFile(filePath), path);
+                new RequestClient.Builder()
+                        .baseUrl("https://test.gongyebangshou.com:8080/")
+                        .url("usr_uploadicon.php")
+                        .param("type","1")
+                        .file("data",new File(path))
+                        .builder()
+                        .postUpload(new OkHttpResponseListener<String>(){
+                            @Override
+                            public void onSuccess(String content){
+                                Log.d("test","content="+content);
+                            }
+
+                            @Override
+                            public void onFailure(Throwable err){
+
+                            }
+                        });
             }
         }).start();
     }

@@ -5,7 +5,7 @@ import com.netlibrary.NetClient;
 import com.netlibrary.listener.OnResultListener;
 
 import java.io.File;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * TODO 网络请求接口类
@@ -16,20 +16,21 @@ import java.util.Map;
  */
 
 public class RequestClient{
+
+    private static class SingleLoader{
+        private final static RequestClient INSTANCE = new RequestClient();
+    }
+
+    public static RequestClient getInstance(){
+        return  SingleLoader.INSTANCE;
+    }
     
     private static NetClient.Builder builder;
 
     /**
      * get请求接口
-     * @param baseUrl url前缀
-     * @param url url接口后缀
-     * @param maps 请求文本参数
      */
-    public static <T>  void get(String baseUrl,String url,Map<String,String> maps, final OkHttpResponseListener<T> listener){
-        builder = new NetClient.Builder(App.getContext())
-                .baseUrl(baseUrl)
-                .url(url)
-                .params(maps);
+    public <T>  void get(final OkHttpResponseListener<T> listener){
         handlerCommonParam(builder);
         builder.build()
                 .get(new OnResultListener<T>(listener.clazz){
@@ -48,15 +49,8 @@ public class RequestClient{
 
     /**
      * post请求接口
-     * @param baseUrl url前缀
-     * @param url url接口后缀
-     * @param maps 请求文本参数
      */
-    public static <T> void post(String baseUrl, String url, Map<String,String> maps, final OkHttpResponseListener<T> listener){
-        builder = new NetClient.Builder(App.getContext())
-                .baseUrl(baseUrl)
-                .url(url)
-                .params(maps);
+    public <T> void post(final OkHttpResponseListener<T> listener){
         handlerCommonParam(builder);
         builder.build()
                 .post(new OnResultListener<T>(listener.clazz){
@@ -83,18 +77,8 @@ public class RequestClient{
 
     /**
      * 文件上传接口
-     * @param baseUrl url前缀
-     * @param url url接口后缀
-     * @param maps 请求文本参数
-     * @param files 请求文件参数
      */
-    public static <T> void postUpload(String baseUrl,String url,Map<String,String> maps,
-                                      Map<String,File> files,final OkHttpResponseListener<T> listener){
-        builder = new NetClient.Builder(App.getContext())
-                .baseUrl(baseUrl)
-                .url(url)
-                .params(maps)
-                .files(files);
+    public <T> void postUpload(final OkHttpResponseListener<T> listener){
         handlerCommonParam(builder);
         builder.build()
                 .postUpload(new OnResultListener<T>(listener.clazz){
@@ -122,7 +106,7 @@ public class RequestClient{
     /**
      * 处理公共参数
      */
-    private static void handlerCommonParam(NetClient.Builder builder){
+    private void handlerCommonParam(NetClient.Builder builder){
         builder.param("uid","10000524");
         builder.param("os","2");//1:ios 2:android
         builder.param("app_ver","32");//版本编号
@@ -132,7 +116,7 @@ public class RequestClient{
     /**
      * 拦截处理成功回调
      */
-    private static <T> void handlerIntercept(T content){
+    private <T> void handlerIntercept(T content){
         try {
 //            JSONObject jsonObj = new JSONObject(content+"");
 //            int ret = jsonObj.getInt("ret");
@@ -142,6 +126,44 @@ public class RequestClient{
 //            }
         }catch (Exception e){
             e.printStackTrace();
+        }
+    }
+
+
+    public static class Builder{
+        private String baseUrl;
+        private String url;
+        private ConcurrentHashMap<String, String> params = new ConcurrentHashMap<>();
+        private ConcurrentHashMap<String, File> files = new ConcurrentHashMap<>();
+
+        public  Builder baseUrl(String baseUrl){
+            this.baseUrl = baseUrl;
+            return this;
+        }
+
+        public Builder url(String  url){
+            this.url = url;
+            return this;
+        }
+
+        public Builder param(String key, String value){
+            params.put(key,value);
+            return this;
+        }
+
+        public Builder file(String key, File file){
+            files.put(key,file);
+            return this;
+        }
+
+        public RequestClient builder(){
+            builder = new NetClient.Builder(App.getContext())
+                    .baseUrl(baseUrl)
+                    .url(url)
+                    .params(params)
+                    .files(files);
+
+            return RequestClient.getInstance();
         }
     }
 }
