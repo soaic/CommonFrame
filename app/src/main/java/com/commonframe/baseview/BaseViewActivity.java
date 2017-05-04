@@ -1,29 +1,32 @@
 package com.commonframe.baseview;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.commonframe.App;
 import com.commonframe.R;
 import com.commonframe.base.BaseActivity;
 import com.commonframe.net.OkHttpResponseListener;
-import com.commonframe.net.RequestClient;
+import com.commonframe.net.OKHttpRequestClient;
 import com.commonframe.ui.SelectPhotoPop;
 import com.imagelibrary.photoselect.CameraCore;
 import com.imagelibrary.photoselect.CameraProxy;
-import com.netlibrary.NetClient;
-import com.netlibrary.listener.OnResultListener;
 
 import net.bither.util.NativeUtil;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.FileNotFoundException;
+
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class BaseViewActivity extends BaseActivity implements CameraCore.CameraResult{
     
@@ -68,15 +71,14 @@ public class BaseViewActivity extends BaseActivity implements CameraCore.CameraR
 
     @Override
     protected void loadData(){
-
-        new RequestClient.Builder()
-                .baseUrl("https://test.gongyebangshou.com:8080/")
-                .url("usr_verflogin.php")
+        
+        new OKHttpRequestClient.Builder()
+                .url("https://test.gongyebangshou.com:8080/usr_verflogin.php")
                 .param("phone","13113613681")
                 .param("login_type","2")
                 .param("verfcode","1234")
                 .builder()
-                .get(new OkHttpResponseListener<String>(){
+                .post(new OkHttpResponseListener<String>(){
                     @Override
                     public void onSuccess(String content){
                         Log.d("test","content="+content);
@@ -91,14 +93,38 @@ public class BaseViewActivity extends BaseActivity implements CameraCore.CameraR
 
     @Override
     public void onCameraSuccess(final String filePath){
-
-        new Thread(new Runnable(){
+        showProgressDialog();
+        Observable.create(new Observable.OnSubscribe<String>(){
             @Override
-            public void run(){
-                Log.d("camera","filePath="+filePath);
+            public void call(Subscriber<? super String> subscriber){
                 String path = SelectPhotoPop.getInstance().getDiskCacheDir(BaseViewActivity.this)+"/1_10000524.jpg";
-                NativeUtil.compressBitmap(NativeUtil.getBitmapFromFile(filePath), path);
-                new RequestClient.Builder()
+                Bitmap bitmap = NativeUtil.getBitmapFromFile(filePath);
+                if(bitmap!=null){
+                    NativeUtil.compressBitmap(bitmap, path);
+                    subscriber.onNext(path);
+                }else{
+                    subscriber.onError(new FileNotFoundException());
+                }
+            }
+        })
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Subscriber<String>(){
+            @Override
+            public void onCompleted(){
+            }
+
+            @Override
+            public void onError(Throwable e){
+                hideProgressDialog();
+                if(e instanceof FileNotFoundException){
+                    Toast.makeText(BaseViewActivity.this,"无效图片,请重新选择!",Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onNext(String path){
+                new OKHttpRequestClient.Builder()
                         .baseUrl("https://test.gongyebangshou.com:8080/")
                         .url("usr_uploadicon.php")
                         .param("type","1")
@@ -107,16 +133,17 @@ public class BaseViewActivity extends BaseActivity implements CameraCore.CameraR
                         .postUpload(new OkHttpResponseListener<String>(){
                             @Override
                             public void onSuccess(String content){
+                                hideProgressDialog();
                                 Log.d("test","content="+content);
                             }
 
                             @Override
                             public void onFailure(Throwable err){
-
+                                hideProgressDialog();
                             }
                         });
             }
-        }).start();
+        });
     }
 
     @Override

@@ -1,10 +1,10 @@
 package com.imagelibrary;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.bumptech.glide.DrawableRequestBuilder;
 import com.bumptech.glide.Glide;
@@ -16,7 +16,9 @@ import com.imagelibrary.glide.DiskCacheSizeTask;
 
 import java.io.File;
 
-import jp.wasabeef.glide.transformations.*;
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
+import jp.wasabeef.glide.transformations.GrayscaleTransformation;
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 /**
  Glide.with(context)
@@ -35,7 +37,6 @@ import jp.wasabeef.glide.transformations.*;
      .bitmapTransform(new CropCircleTransformation(context))  //圆角裁切
      .into(imageView);                                   //目标View
  */
-
 /**
  * 图片封装工具类
  *
@@ -43,7 +44,6 @@ import jp.wasabeef.glide.transformations.*;
  * Created by XiaoSai on 2016/11/22.
  */
 public class ImageUtils{
-    private DrawableRequestBuilder<?> curDrawableRequestBuilder;
 
     public static ImageUtils getInstance(){
         return SingleLoader.INSTANCE;
@@ -55,38 +55,39 @@ public class ImageUtils{
 
     /**
      * 读取网络url资源
-     * @param url
-     * @return
+     * @param url 图片地址
+     * @return ImageBuilder
      */
-    public ImageUtils source(Context context, String url){
-        curDrawableRequestBuilder = getDrawableRequestBuilder(context,url);
-        return this;
+    public ImageBuilder source(Context context, String url){
+        return new ImageBuilder(Glide.with(context).load(url),context);
     }
 
     /**
      * 读取drawable资源
-     * @param rid
-     * @return
+     * @param rid rid资源
+     * @return ImageBuilder
      */
-    public ImageUtils source(Context context, int rid){
-        curDrawableRequestBuilder = getDrawableRequestBuilder(context,rid);
-        return this;
+    public ImageBuilder source(Context context, int rid){
+        return new ImageBuilder(Glide.with(context).load(rid),context);
     }
 
     /**
      * 读取文件资源
-     * @param file
-     * @return
+     * @param file 文件图片
+     * @return ImageBuilder 
      */
-    public ImageUtils source(Context context, File file){
-        curDrawableRequestBuilder = getDrawableRequestBuilder(context,file);
-        return this;
+    public ImageBuilder source(Context context, File file){
+        return new ImageBuilder(Glide.with(context).load(file),context);
     }
 
-    public ImageUtils sourceFile(Context context,String filePath){
+    /**
+     * 读取文件资源
+     * @param filePath 文件路径
+     * @return ImageBuilder
+     */
+    public ImageBuilder sourceFile(Context context,String filePath){
         String fileStr = getFileSource(filePath);
-        curDrawableRequestBuilder = getDrawableRequestBuilder(context,fileStr);
-        return this;
+        return new ImageBuilder(Glide.with(context).load(fileStr),context);
     }
 
     /**
@@ -94,10 +95,9 @@ public class ImageUtils{
      * @param rawRid
      * @return
      */
-    public ImageUtils sourceRaw(Context context, int rawRid){
+    public ImageBuilder sourceRaw(Context context, int rawRid){
         String rawStr = getRawSource(context,rawRid);
-        curDrawableRequestBuilder = getDrawableRequestBuilder(context,rawStr);
-        return this;
+        return new ImageBuilder(Glide.with(context).load(rawStr),context);
     }
 
     /**
@@ -105,112 +105,21 @@ public class ImageUtils{
      * @param assistPath
      * @return
      */
-    public ImageUtils sourceAssist(Context context, String assistPath){
+    public ImageBuilder sourceAssist(Context context, String assistPath){
         String assistStr = getAssetsSource(assistPath);
-        curDrawableRequestBuilder = getDrawableRequestBuilder(context,assistStr);
-        return this;
-    }
-
-    /**
-     * 获取基本的RequestBuilder
-     * @param context
-     * @param source
-     * @return
-     */
-    private <T> DrawableRequestBuilder<T>  getDrawableRequestBuilder(Context context,T source){
-        return Glide.with(context).load(source)
-                .centerCrop()                                       //居中裁切
-                .crossFade()                                        //设置加载渐变动画
-                .fallback(null)                                     //设置model为空时要显示的Drawable。如果没设置fallback，model为空时将显示error的Drawable，如果error的Drawable也没设置，就显示placeholder的Drawable。
-                .error(null)                                        //设置load失败时显示的Drawable。
-                .placeholder(null);                                 //设置资源加载过程中的占位Drawable。;
-    }
-
-    /**
-     * 圆形裁切
-     * @return
-     */
-    public ImageUtils cropCircleTransformation(Context context){
-        if(curDrawableRequestBuilder!=null){
-            curDrawableRequestBuilder.bitmapTransform(new CropCircleTransformation(context));
-        }
-        return this;
-    }
-
-    /**
-     * 圆角裁切
-     * @return
-     */
-    public ImageUtils roundedCornersTransformation(Context context){
-        if(curDrawableRequestBuilder!=null){
-            curDrawableRequestBuilder.bitmapTransform(new RoundedCornersTransformation(context,30,0, RoundedCornersTransformation.CornerType.ALL));
-        }
-        return this;
-    }
-
-    /**
-     * 灰度处理
-     * @return
-     */
-    public ImageUtils grayscaleTransformation(Context context){
-        if(curDrawableRequestBuilder!=null){
-            curDrawableRequestBuilder.bitmapTransform(new GrayscaleTransformation(context));
-        }
-        return this;
+        return new ImageBuilder(Glide.with(context).load(assistStr),context);
     }
     
-    /**
-     * 显示到ImageView上
-     * @param imageView
-     */
-    public void display(ImageView imageView){
-        if(curDrawableRequestBuilder!=null){
-            curDrawableRequestBuilder.into(imageView);
-            curDrawableRequestBuilder = null;
-        }
-    }
-    
-    /**
-     * 显示到ImageView上
-     * @param imageView
-     */
-    public void display(final ImageView imageView,Handler handler){
-        if(curDrawableRequestBuilder!=null){
-            handler.post(new Runnable(){
-                @Override
-                public void run(){
-                    curDrawableRequestBuilder.into(imageView);
-                    curDrawableRequestBuilder = null;
-                }
-            });
-        }
-    }
-
-    /**
-     * 设置基本配置
-     * @return
-     */
-    public ImageUtils baseConfig(){
-        curDrawableRequestBuilder
-                .centerCrop()                                       //居中裁切
-                .crossFade()                                        //设置加载渐变动画
-                .fallback(null)                                     //设置model为空时要显示的Drawable。如果没设置fallback，model为空时将显示error的Drawable，如果error的Drawable也没设置，就显示placeholder的Drawable。
-                .error(null)                                        //设置load失败时显示的Drawable。
-                .placeholder(null);                                 //设置资源加载过程中的占位Drawable。
-        return this;
-    }
-
-    
-    private String getFileSource(String fullPath){
+    public String getFileSource(String fullPath){
         return "file://"+ fullPath;
     }
-    private String getAssetsSource(String fileName){
+    public String getAssetsSource(String fileName){
         return "file:///android_asset/"+fileName;
     }
-    private String getRawSource(Context context,int rawRid){
+    public String getRawSource(Context context,int rawRid){
         return "android.resource://"+context.getPackageName()+"/raw/"+rawRid;
     }
-    private String getDrawableSource(Context context,int drawRid){
+    public String getDrawableSource(Context context,int drawRid){
         return "android.resource://"+context.getPackageName()+"/drawable/"+drawRid;
     }
 
@@ -220,7 +129,6 @@ public class ImageUtils{
      */
     public void clearMemory(Context context){
         Glide.get(context).clearMemory();
-
     }
 
     /**
@@ -273,4 +181,109 @@ public class ImageUtils{
             return false;
         }
     };
+
+    
+    public class ImageBuilder{
+        private DrawableRequestBuilder builder;
+        protected Context context;
+
+        public ImageBuilder(DrawableRequestBuilder builder,Context context){
+            this.context = context;
+            this.builder = builder;
+
+        }
+
+        /** 设置加载中图片 */
+        public ImageBuilder setImageLoading(Drawable drawable){
+            builder.placeholder(drawable);
+            return this;
+        }
+
+        /** 设置加载中图片 */
+        public ImageBuilder setImageLoading(int rid){
+            builder.placeholder(rid);
+            return this;
+        }
+
+        /** 设置加载失败图片 */
+        public ImageBuilder setImageError(Drawable drawable){
+            builder.error(drawable);
+            return this;
+        }
+
+        /** 设置加载失败图片 */
+        public ImageBuilder setImageError(int rid){
+            builder.error(rid);
+            return this;
+        }
+
+        /** 设置为空图片 */
+        public ImageBuilder setImageEmpty(Drawable drawable){
+            builder.fallback(drawable);
+            return this;
+        }
+
+        /** 灰度处理 */
+        public ImageBuilder setTransformGrayscale(){
+            builder.bitmapTransform(new GrayscaleTransformation(context));
+            return this;
+        }
+
+        /** 圆形处理 */
+        public ImageBuilder setTransformCircle(){
+            builder.bitmapTransform(new CropCircleTransformation(context));
+            return this;
+        }
+
+        /** 圆角处理 */
+        public ImageBuilder setTransformRoundedCorners(int radius){
+            builder.bitmapTransform(new RoundedCornersTransformation(context, radius, 0, RoundedCornersTransformation.CornerType.ALL));
+            return this;
+        }
+
+        /** 设置图片裁切 */
+        public ImageBuilder setScaleType(ImageView.ScaleType scaleType){
+            switch(scaleType){
+                case CENTER_CROP:
+                    builder.centerCrop();
+                    break;
+                case FIT_CENTER:
+                    builder.fitCenter();
+                    break;
+            }
+            return this;
+        }
+
+        /** 设置淡若淡出效果 */
+        public ImageBuilder setCrossFade(){
+            builder.crossFade();
+            return this;
+        }
+
+        /** 设置为空图片 
+         *  如果设置fallback, model为空时将显示error的Drawable，
+         *  如果error的Drawable也没设置，就显示placeholder的Drawable。
+         **/
+        public ImageBuilder setImageEmpty(int rid){
+            builder.placeholder(rid);
+            return this;
+        }
+
+        /** 显示到ImageView */
+        public void display(ImageView image){
+            builder.into(image);
+            builder = null;
+        }
+
+        /** 主线程显示ImageView */
+        public void display(final ImageView image,Handler handler){
+            handler.post(new Runnable(){
+                @Override
+                public void run(){
+                    builder.into(image);
+                    builder = null;
+                }
+            });
+        }
+    }
 }

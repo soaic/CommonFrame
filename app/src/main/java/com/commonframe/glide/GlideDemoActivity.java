@@ -36,7 +36,9 @@ public class GlideDemoActivity extends BaseActivity{
         image_view = getViewById(R.id.image_view);
         glide_cache_tv = getViewById(R.id.glide_cache_tv);
         //显示图片
-        ImageUtils.getInstance().source(this,"https://avatars.githubusercontent.com/u/6779547").display(image_view);
+        ImageUtils.getInstance().source(this,"https://avatars.githubusercontent.com/u/6779547")
+                .setTransformCircle()
+                .display(image_view);
         //获取缓存大小
         ImageUtils.getInstance().getDataDiskCacheSize(getApplicationContext(),new DiskCacheSizeTask.CacheReceiveListener(){
             @Override

@@ -31,6 +31,7 @@ import javax.net.ssl.X509TrustManager;
  * @author XiaoSai
  */
 public class OkHttpSSLSocketFactory{
+    private static int rawId = 0;//R.raw.srca; //证书
 
     /**
      * 获取SSLSocketFactory忽略证书 
@@ -58,7 +59,7 @@ public class OkHttpSSLSocketFactory{
         SSLContext sslContext = null;
         try{
 
-            InputStream certificate = context.getResources().openRawResource(R.raw.srca);//12306证书
+            InputStream certificate = context.getResources().openRawResource(rawId);//12306证书
             CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
             KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
             keyStore.load(null);
@@ -88,8 +89,8 @@ public class OkHttpSSLSocketFactory{
     public static SSLSocketFactory getSocketFactoryAll(Context context){
         String KEY_STORE_PASSWORD = "123456";//证书密码 客户端证书密码   
         String KEY_STORE_TRUST_PASSWORD = "123456";//授信证书密码 服务端证书密码   
-        InputStream trust_input = context.getResources().openRawResource(R.raw.srca);//服务器证书 
-        InputStream client_input = context.getResources().openRawResource(R.raw.srca);//客户端证书
+        InputStream trust_input = context.getResources().openRawResource(rawId);//服务器证书 
+        InputStream client_input = context.getResources().openRawResource(rawId);//客户端证书
         SSLContext sslContext = null;
         try{
             CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");

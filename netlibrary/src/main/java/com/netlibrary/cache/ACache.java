@@ -1,8 +1,5 @@
 package com.netlibrary.cache;
 
-/**
- * Created by xs on 2016/10/31.
- */
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
@@ -99,7 +96,7 @@ public class ACache {
     // =======================================
 
     /**
-     * 保存 String数据 �?缓存�?
+     * 保存 String数据的缓存
      *
      * @param key
      *            保存的key
@@ -128,7 +125,7 @@ public class ACache {
     }
 
     /**
-     * 保存 String数据 �?缓存�?
+     * 保存 String数据的缓存
      *
      * @param key
      *            保存的key
@@ -187,7 +184,7 @@ public class ACache {
     // =======================================
 
     /**
-     * 保存 JSONObject数据 �?缓存�?
+     * 保存 JSONObject数据的缓存
      *
      * @param key
      *            保存的key
@@ -199,7 +196,7 @@ public class ACache {
     }
 
     /**
-     * 保存 JSONObject数据 �?缓存�?
+     * 保存 JSONObject数据的缓存
      *
      * @param key
      *            保存的key
@@ -234,7 +231,7 @@ public class ACache {
     // =======================================
 
     /**
-     * 保存 JSONArray数据 �?缓存�?
+     * 保存 JSONArray数据的缓存
      *
      * @param key
      *            保存的key
@@ -246,7 +243,7 @@ public class ACache {
     }
 
     /**
-     * 保存 JSONArray数据 �?缓存�?
+     * 保存 JSONArray数据的缓存
      *
      * @param key
      *            保存的key
@@ -281,12 +278,12 @@ public class ACache {
     // =======================================
 
     /**
-     * 保存 byte数据 �?缓存�?
+     * 保存 byte数据 的缓存
      *
      * @param key
      *            保存的key
      * @param value
-     *            保存的数�?
+     *            保存的数据
      */
     public void put(String key, byte[] value) {
         File file = mCache.newFile(key);
@@ -310,12 +307,12 @@ public class ACache {
     }
 
     /**
-     * 保存 byte数据 �?缓存�?
+     * 保存 byte数据 的缓存
      *
      * @param key
      *            保存的key
      * @param value
-     *            保存的数�?
+     *            保存的数据
      * @param saveTime
      *            保存的时间，单位：秒
      */
@@ -362,11 +359,11 @@ public class ACache {
     }
 
     // =======================================
-    // ============= 序列�?数据 读写 ===============
+    // ============= 序列化数据 读写 ===============
     // =======================================
 
     /**
-     * 保存 Serializable数据 �?缓存�?
+     * 保存 Serializable数据的缓存
      *
      * @param key
      *            保存的key
@@ -380,8 +377,7 @@ public class ACache {
 
 
     /**
-     * 保存 Serializable数据�?缓存�?
-     *
+     * 保存 Serializable数据的缓存
      *
      * @param key
      *            保存的key
@@ -490,7 +486,7 @@ public class ACache {
     // =======================================
 
     /**
-     * 保存 bitmap �?缓存�?
+     * 保存 bitmap 缓存
      *
      * @param key
      *            保存的key
@@ -502,12 +498,12 @@ public class ACache {
     }
 
     /**
-     * 保存 bitmap �?缓存�?
+     * 保存 bitmap 缓存
      *
      * @param key
      *            保存的key
      * @param value
-     *            保存�?bitmap 数据
+     *            保存的bitmap 数据
      * @param saveTime
      *            保存的时间，单位：秒
      */
@@ -525,7 +521,7 @@ public class ACache {
         if (getAsBinary(key) == null) {
             return null;
         }
-        return Utils.Bytes2Bimap(getAsBinary(key));
+        return Utils.Bytes2Bitmap(getAsBinary(key));
     }
 
     // =======================================
@@ -533,7 +529,7 @@ public class ACache {
     // =======================================
 
     /**
-     * 保存 drawable �?缓存�?
+     * 保存 drawable 缓存
      *
      * @param key
      *            保存的key
@@ -545,12 +541,12 @@ public class ACache {
     }
 
     /**
-     * 保存 drawable �?缓存�?
+     * 保存 drawable 缓存
      *
      * @param key
      *            保存的key
      * @param value
-     *            保存�?drawable 数据
+     *            保存的drawable 数据
      * @param saveTime
      *            保存的时间，单位：秒
      */
@@ -568,14 +564,14 @@ public class ACache {
         if (getAsBinary(key) == null) {
             return null;
         }
-        return Utils.bitmap2Drawable(Utils.Bytes2Bimap(getAsBinary(key)));
+        return Utils.bitmap2Drawable(Utils.Bytes2Bitmap(getAsBinary(key)));
     }
 
     /**
      * 获取缓存文件
      *
      * @param key
-     * @return value 缓存的文�?
+     * @return value 缓存的文件
      */
     public File file(String key) {
         File f = mCache.newFile(key);
@@ -595,15 +591,14 @@ public class ACache {
     }
 
     /**
-     * 清除�?��数据
+     * 清除缓存数据
      */
     public void clear() {
         mCache.clear();
     }
 
     /**
-     * @title 缓存管理�?
-     * @author 杨福海（michael�?www.yangfuhai.com
+     * @title 缓存管理
      * @version 1.0
      */
     public class ACacheManager {
@@ -741,8 +736,7 @@ public class ACache {
     }
 
     /**
-     * @title 时间计算工具�?
-     * @author 杨福海（michael�?www.yangfuhai.com
+     * @title 时间计算工具类
      * @version 1.0
      */
     private static class Utils {
@@ -852,8 +846,8 @@ public class ACache {
             return currentTime + "-" + second + mSeparator;
         }
 
-        /*
-         * Bitmap �?byte[]
+        /**
+         * Bitmap 转 byte[]
          */
         private static byte[] Bitmap2Bytes(Bitmap bm) {
             if (bm == null) {
@@ -864,41 +858,41 @@ public class ACache {
             return baos.toByteArray();
         }
 
-        /*
-         * byte[] �?Bitmap
+        /**
+         * byte[] 转 Bitmap
          */
-        private static Bitmap Bytes2Bimap(byte[] b) {
+        private static Bitmap Bytes2Bitmap(byte[] b) {
             if (b.length == 0) {
                 return null;
             }
             return BitmapFactory.decodeByteArray(b, 0, b.length);
         }
 
-        /*
-         * Drawable �?Bitmap
+        /**
+         * Drawable 转 Bitmap
          */
         private static Bitmap drawable2Bitmap(Drawable drawable) {
             if (drawable == null) {
                 return null;
             }
-            // �?drawable 的长�?
+            // drawable 的长宽
             int w = drawable.getIntrinsicWidth();
             int h = drawable.getIntrinsicHeight();
-            // �?drawable 的颜色格�?
+            // drawable 的颜色
             Bitmap.Config config = drawable.getOpacity() != PixelFormat.OPAQUE ? Bitmap.Config.ARGB_8888
                     : Bitmap.Config.RGB_565;
             // 建立对应 bitmap
             Bitmap bitmap = Bitmap.createBitmap(w, h, config);
-            // 建立对应 bitmap 的画�?
+            // 建立对应 bitmap 的画布
             Canvas canvas = new Canvas(bitmap);
             drawable.setBounds(0, 0, w, h);
-            // �?drawable 内容画到画布�?
+            // drawable 内容画到画布上
             drawable.draw(canvas);
             return bitmap;
         }
 
-        /*
-         * Bitmap �?Drawable
+        /**
+         * Bitmap 转 Drawable
          */
         @SuppressWarnings("deprecation")
         private static Drawable bitmap2Drawable(Bitmap bm) {

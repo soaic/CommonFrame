@@ -2,6 +2,8 @@ package com.netlibrary.interceptor;
 
 import java.io.EOFException;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.concurrent.TimeUnit;
@@ -155,7 +157,6 @@ public final class HttpLoggingInterceptor implements Interceptor {
                     logger.log("Content-Length: " + requestBody.contentLength());
                 }
             }
-
             Headers headers = request.headers();
             for (int i = 0, count = headers.size(); i < count; i++) {
                 String name = headers.name(i);
@@ -173,15 +174,10 @@ public final class HttpLoggingInterceptor implements Interceptor {
                 Buffer buffer = new Buffer();
                 requestBody.writeTo(buffer);
 
-                Charset charset = UTF8;
-                MediaType contentType = requestBody.contentType();
-                if (contentType != null) {
-                    charset = contentType.charset(UTF8);
-                }
-
-                logger.log("");
                 if (isPlaintext(buffer)) {
-                    logger.log(buffer.readString(charset));
+                    //过滤非法中文字符
+                    logger.log(filterOffUtf8Mb4(buffer.readByteString().toByteArray()));
+                    
                     logger.log("--> END " + request.method()
                             + " (" + requestBody.contentLength() + "-byte body)");
                 } else {
@@ -276,6 +272,43 @@ public final class HttpLoggingInterceptor implements Interceptor {
             return true;
         } catch (EOFException e) {
             return false; // Truncated UTF-8 sequence.
+        }
+    }
+
+    /**
+     * 过滤非汉字的utf8的字符
+     * @param bytes
+     * @return str
+     */
+    private String filterOffUtf8Mb4(byte[] bytes){
+        try{
+            ByteBuffer byteBuffer = ByteBuffer.allocate(bytes.length);
+            int i = 0;
+            while (i < bytes.length) {
+                short b = bytes[i];
+                if (b > 0) {
+                    byteBuffer.put(bytes[i++]);
+                    continue;
+                }
+                b += 256;
+                if ((b ^ 0xC0) >> 4 == 0) {
+                    byteBuffer.put(bytes, i, 2);
+                    i += 2;
+                }
+                else if ((b ^ 0xE0) >> 4 == 0) {
+                    byteBuffer.put(bytes, i, 3);
+                    i += 3;
+                }
+                else if ((b ^ 0xF0) >> 4 == 0) {
+                    i += 4;
+                }else{
+                    i += 1;
+                }
+            }
+            byteBuffer.flip();
+            return new String(byteBuffer.array(), "utf-8");
+        }catch(UnsupportedEncodingException e){
+            return "";
         }
     }
 

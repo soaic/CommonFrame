@@ -30,13 +30,15 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 /**
- * OkHttp网络请求封装类
- * 
- * Created by XiaoSai on 2016/10/23.
+ * TODO OkHttp网络请求封装类
+ * @author XiaoSai
+ * @version V1.0
+ * @since 2016/10/23.
  */
 
 public class NetClient{
@@ -49,6 +51,7 @@ public class NetClient{
     private Gson mGson;
     private static Context mContext;
     private OkHttpClient mClient;
+    private Subscription subscription;
 
     private NetClient(){
         if(mContext == null){
@@ -69,8 +72,16 @@ public class NetClient{
                 .cache(new Cache(mContext.getCacheDir(),10 * 1024 * 1024))   //设置缓存目录和10M缓存
                 .addInterceptor(interceptor)    //添加日志拦截器（该方法也可以设置公共参数，头信息）
                 .build();
-
+        
         mGson = new Gson();
+    }
+
+    /**
+     * 从新配置OKHttp
+     * @param client 
+     */
+    private void setOkHttpClient(OkHttpClient client){
+        this.mClient = client;
     }
     
     private static NetClient getInstance(){
@@ -85,15 +96,19 @@ public class NetClient{
         this.mCache= ACache.get(mContext).getAsString(mCacheKey);
         
         //如果和上次baseUrl不同，则重新创建retrofit
-        if(!mBaseUrl.equals(builder.baseUrl)){
-            mBaseUrl = builder.baseUrl;
-            mRetrofit = new Retrofit.Builder()
-                    .baseUrl(mBaseUrl)
-                    .client(mClient)
-                    .addCallAdapterFactory(RxJavaCallAdapterFactory.create())   //添加RxJava
-                    .build();
+        try{
+            if(!mBaseUrl.equals(builder.baseUrl)){
+                mBaseUrl = builder.baseUrl;
+                mRetrofit = new Retrofit.Builder()
+                        .baseUrl(mBaseUrl)
+                        .client(mClient)
+                        .addCallAdapterFactory(RxJavaCallAdapterFactory.create())   //添加RxJava
+                        .build();
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+            mRetrofit = null;
         }
-        
     }
 
     /**
@@ -106,9 +121,11 @@ public class NetClient{
             handlerError(new ConnectException("无法连接网络!"),onResultListener);
             return;
         }
-        mCall = mRetrofit.create(Params.class)
-                .paramsGet(mBuilder.url, mBuilder.params);
-        request(onResultListener);
+        if(mRetrofit!=null){
+            mCall = mRetrofit.create(Params.class)
+                    .paramsGet(mBuilder.url,mBuilder.params);
+            request(onResultListener);
+        }
     }
     
     /**
@@ -122,9 +139,11 @@ public class NetClient{
             handlerError(new ConnectException("无法连接网络!"),onResultListener);
             return;
         }
-        mCall = mRetrofit.create(Params.class)
-                .paramsPost(mBuilder.url, mBuilder.params);
-        request(onResultListener);
+        if(mRetrofit!=null){
+            mCall = mRetrofit.create(Params.class)
+                    .paramsPost(mBuilder.url,mBuilder.params);
+            request(onResultListener);
+        }
     }
 
     /**
@@ -142,9 +161,11 @@ public class NetClient{
             RequestBody value = RequestBody.create(MediaType.parse("text/plain"), mBuilder.params.get(key));
             mBuilder.files.put(key,value);
         }
-        mCall = mRetrofit.create(Params.class)
-                .paramsPostUpload(mBuilder.url, mBuilder.files);
-        request(onResultListener);
+        if(mRetrofit!=null){
+            mCall = mRetrofit.create(Params.class)
+                    .paramsPostUpload(mBuilder.url,mBuilder.files);
+            request(onResultListener);
+        }
     }
 
     /**
@@ -198,6 +219,15 @@ public class NetClient{
                 .paramsDelete(mBuilder.url, mBuilder.params);
         request(onResultListener);
     }
+
+    /**
+     * 取消网络请求
+     */
+    public void cancleRequest(){
+        if(subscription!=null&&!subscription.isUnsubscribed()){
+            subscription.unsubscribe();
+        }
+    }
     
 
     /**
@@ -206,7 +236,7 @@ public class NetClient{
      */
     private <T> void request(final OnResultListener<T> onResultListener){
         //访问网络切换异步线程
-        mCall.subscribeOn(Schedulers.io())
+        subscription = mCall.subscribeOn(Schedulers.io())
             //响应结果处理切换成主线程
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new Subscriber<ResponseBody>(){

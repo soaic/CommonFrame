@@ -1,5 +1,7 @@
 package com.commonframe.net;
 
+import android.text.TextUtils;
+
 import com.commonframe.App;
 import com.netlibrary.NetClient;
 import com.netlibrary.listener.OnResultListener;
@@ -15,18 +17,18 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since 2017/3/7.
  */
 
-public class RequestClient{
+public class OKHttpRequestClient{
 
     private static class SingleLoader{
-        private final static RequestClient INSTANCE = new RequestClient();
+        private final static OKHttpRequestClient INSTANCE = new OKHttpRequestClient();
     }
 
-    public static RequestClient getInstance(){
+    public static OKHttpRequestClient getInstance(){
         return  SingleLoader.INSTANCE;
     }
     
     private static NetClient.Builder builder;
-
+    
     /**
      * get请求接口
      */
@@ -156,14 +158,21 @@ public class RequestClient{
             return this;
         }
 
-        public RequestClient builder(){
+        public OKHttpRequestClient builder(){
+            
+//            //处理BaseUrl为null
+//            if(TextUtils.isEmpty(baseUrl)){
+//                baseUrl = url.substring(0,url.lastIndexOf("/")+1);
+//                url = url.substring(url.lastIndexOf("/")+1);
+//            }
+            
             builder = new NetClient.Builder(App.getContext())
                     .baseUrl(baseUrl)
                     .url(url)
                     .params(params)
                     .files(files);
 
-            return RequestClient.getInstance();
+            return OKHttpRequestClient.getInstance();
         }
     }
 }

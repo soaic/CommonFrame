@@ -12,7 +12,6 @@ public class AppUtil {
     /**
      * 描述：判断网络是否有效.
      *
-     *
      * @return true, if is network available
      */
     public static boolean isNetworkAvailable(Context context) {

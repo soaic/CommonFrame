@@ -18,8 +18,10 @@ import retrofit2.http.Url;
 import rx.Observable;
 
 /**
- * Retrofit URL封装
- * Created by xs on 2016/11/3.
+ * TODO Retrofit URL封装
+ * @author XiaoSai
+ * @version V1.0
+ * @since 2016/11/3.
  */
 public interface Params{
     
