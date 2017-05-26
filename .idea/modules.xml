@@ -9,6 +9,7 @@
       <module fileurl="file://$PROJECT_DIR$/greendaolibrary/greendaolibrary.iml" filepath="$PROJECT_DIR$/greendaolibrary/greendaolibrary.iml" />
       <module fileurl="file://$PROJECT_DIR$/imagelibrary/imagelibrary.iml" filepath="$PROJECT_DIR$/imagelibrary/imagelibrary.iml" />
       <module fileurl="file://$PROJECT_DIR$/netlibrary/netlibrary.iml" filepath="$PROJECT_DIR$/netlibrary/netlibrary.iml" />
+      <module fileurl="file://$PROJECT_DIR$/socketlib/socketlib.iml" filepath="$PROJECT_DIR$/socketlib/socketlib.iml" />
     </modules>
   </component>
 </project>

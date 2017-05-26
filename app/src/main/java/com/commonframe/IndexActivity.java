@@ -19,6 +19,8 @@ import com.commonframe.mvp.ui.activity.MainActivity;
 import com.commonframe.recyclerview.RecyclerViewDemoActivity;
 import com.commonframe.scroller.ScrollerActivity;
 import com.commonlibrary.BarUtils;
+import com.commonlibrary.ToastUtils;
+import com.socketlib.SocketConnection;
 
 public class IndexActivity extends BaseActivity{
     private TextView index_mvp;
@@ -27,9 +29,11 @@ public class IndexActivity extends BaseActivity{
     private TextView index_scroller;
     private TextView index_material_design;
     private TextView index_navigation_bar;
+    
 
     @Override
     protected void initVariables(Bundle savedInstanceState){
+        
         
     }
 
@@ -98,19 +102,20 @@ public class IndexActivity extends BaseActivity{
             }
         });        
         
-        getViewById(R.id.index3).setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view){
-                startActivity(new Intent(getApplicationContext(),RecyclerViewDemoActivity.class));
-            }
-        });
-
         getViewById(R.id.index2).setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
                 Intent intent = new Intent(getApplicationContext(),WebActivity.class);
                 intent.putExtra(WebActivity.INTENT_URL,"http://xiaosai.me/");
                 startActivity(intent);
+            }
+        });
+        
+        getViewById(R.id.index3).setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                //startActivity(new Intent(getApplicationContext(),RecyclerViewDemoActivity.class));
+                startActivity(new Intent(getApplicationContext(),com.commonframe.socket.SocketDemoActivity.class));
             }
         });
     }

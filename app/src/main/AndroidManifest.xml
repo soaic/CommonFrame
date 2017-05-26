@@ -72,8 +72,11 @@
             android:name=".baseview.WebActivity"
             android:theme="@style/AppTheme">
         </activity>
-        <activity android:name=".recyclerview.RecyclerViewDemoActivity"
-                  android:theme="@style/AppTheme">
+        <activity
+            android:name=".recyclerview.RecyclerViewDemoActivity"
+            android:theme="@style/AppTheme">
+        </activity>
+        <activity android:name=".socket.SocketDemoActivity">
         </activity>
     </application>
 

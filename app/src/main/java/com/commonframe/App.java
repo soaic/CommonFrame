@@ -2,6 +2,7 @@ package com.commonframe;
 
 import android.app.Application;
 import android.content.Context;
+import android.support.multidex.MultiDex;
 
 import com.greendao.utils.DbCore;
 
@@ -30,6 +31,13 @@ public class App extends Application{
         //启用sql日志
         DbCore.enableQueryBuilderLog();
         
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        //解决65535
+        MultiDex.install(this);
     }
 
     public static Context getContext(){

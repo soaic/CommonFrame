@@ -1,6 +1,7 @@
 package com.commonframe.glide;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
@@ -36,8 +37,19 @@ public class GlideDemoActivity extends BaseActivity{
         image_view = getViewById(R.id.image_view);
         glide_cache_tv = getViewById(R.id.glide_cache_tv);
         //显示图片
-        ImageUtils.getInstance().source(this,"https://avatars.githubusercontent.com/u/6779547")
+        ImageUtils.getInstance().source(image_view.getContext(),"https://avatars.githubusercontent.com/u/6779547")
                 .setTransformCircle()
+                .setLoadListener(new ImageUtils.ImageLoadingListener(){
+                    @Override
+                    public void onLoadingSuccess(Object s,Drawable drawable){
+                        
+                    }
+
+                    @Override
+                    public void onLoadingFail(Exception e){
+
+                    }
+                })
                 .display(image_view);
         //获取缓存大小
         ImageUtils.getInstance().getDataDiskCacheSize(getApplicationContext(),new DiskCacheSizeTask.CacheReceiveListener(){

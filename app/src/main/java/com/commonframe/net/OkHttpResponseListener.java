@@ -25,6 +25,9 @@ public abstract class OkHttpResponseListener<T>{
     /** 请求成功*/
     public abstract void onSuccess(T content);
 
+    /** 请求成功 返回JSON*/
+    public void onSuccessJson(String json){}
+    
     /** 请求失败 根据需求实现*/
     public abstract void onFailure(Throwable err);
 

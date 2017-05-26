@@ -95,7 +95,7 @@ public final class HttpLoggingInterceptor implements Interceptor {
 
         /** A {@link Logger} defaults output appropriate for the current platform. */
         Logger DEFAULT = new Logger() {
-            @Override 
+            @Override
             public void log(String message) {
                 Platform.get().log(INFO, message, null);
             }
@@ -125,7 +125,8 @@ public final class HttpLoggingInterceptor implements Interceptor {
         return level;
     }
 
-    @Override public Response intercept(Chain chain) throws IOException {
+    @Override
+    public Response intercept(Chain chain) throws IOException{
         Level level = this.level;
 
         Request request = chain.request();
@@ -177,7 +178,7 @@ public final class HttpLoggingInterceptor implements Interceptor {
                 if (isPlaintext(buffer)) {
                     //过滤非法中文字符
                     logger.log(filterOffUtf8Mb4(buffer.readByteString().toByteArray()));
-                    
+
                     logger.log("--> END " + request.method()
                             + " (" + requestBody.contentLength() + "-byte body)");
                 } else {
@@ -193,7 +194,7 @@ public final class HttpLoggingInterceptor implements Interceptor {
             response = chain.proceed(request);
         } catch (Exception e) {
             logger.log("<-- HTTP FAILED: " + e);
-            throw e;
+            return chain.proceed(request);
         }
         long tookMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNs);
 
@@ -317,3 +318,4 @@ public final class HttpLoggingInterceptor implements Interceptor {
         return contentEncoding != null && !contentEncoding.equalsIgnoreCase("identity");
     }
 }
+

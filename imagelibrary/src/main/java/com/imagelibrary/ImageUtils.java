@@ -3,6 +3,7 @@ package com.imagelibrary;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -59,7 +60,7 @@ public class ImageUtils{
      * @return ImageBuilder
      */
     public ImageBuilder source(Context context, String url){
-        return new ImageBuilder(Glide.with(context).load(url),context);
+        return new ImageBuilder<>(Glide.with(context).load(url),context);
     }
 
     /**
@@ -68,7 +69,7 @@ public class ImageUtils{
      * @return ImageBuilder
      */
     public ImageBuilder source(Context context, int rid){
-        return new ImageBuilder(Glide.with(context).load(rid),context);
+        return new ImageBuilder<>(Glide.with(context).load(rid),context);
     }
 
     /**
@@ -77,7 +78,7 @@ public class ImageUtils{
      * @return ImageBuilder 
      */
     public ImageBuilder source(Context context, File file){
-        return new ImageBuilder(Glide.with(context).load(file),context);
+        return new ImageBuilder<>(Glide.with(context).load(file),context);
     }
 
     /**
@@ -87,27 +88,27 @@ public class ImageUtils{
      */
     public ImageBuilder sourceFile(Context context,String filePath){
         String fileStr = getFileSource(filePath);
-        return new ImageBuilder(Glide.with(context).load(fileStr),context);
+        return new ImageBuilder<>(Glide.with(context).load(fileStr),context);
     }
 
     /**
      * 读取raw资源
-     * @param rawRid
-     * @return
+     * @param rawRid rawId
+     * @return ImageBuilder
      */
     public ImageBuilder sourceRaw(Context context, int rawRid){
         String rawStr = getRawSource(context,rawRid);
-        return new ImageBuilder(Glide.with(context).load(rawStr),context);
+        return new ImageBuilder<>(Glide.with(context).load(rawStr),context);
     }
 
     /**
      * 读取assist资源
-     * @param assistPath
-     * @return
+     * @param assistPath assist
+     * @return ImageBuilder
      */
     public ImageBuilder sourceAssist(Context context, String assistPath){
         String assistStr = getAssetsSource(assistPath);
-        return new ImageBuilder(Glide.with(context).load(assistStr),context);
+        return new ImageBuilder<String>(Glide.with(context).load(assistStr),context);
     }
     
     public String getFileSource(String fullPath){
@@ -165,29 +166,12 @@ public class ImageUtils{
     public void getSDDiskCacheSize(Context context,DiskCacheSizeTask.CacheReceiveListener cacheReceiveListener){
         new DiskCacheSizeTask(cacheReceiveListener).execute(new File(context.getExternalCacheDir(),DiskCache.Factory.DEFAULT_DISK_CACHE_DIR));
     }
-
-    /**
-     * 图片请求监听
-     */
-    RequestListener<String,GlideDrawable> listener = new RequestListener<String,GlideDrawable>(){
-        @Override
-        public boolean onException(Exception e,String model,Target<GlideDrawable> target,boolean isFirstResource){
-            return false;
-        }
-
-        @Override
-        public boolean onResourceReady(GlideDrawable resource,String model,Target<GlideDrawable> target,boolean isFromMemoryCache,boolean isFirstResource){
-
-            return false;
-        }
-    };
-
     
-    public class ImageBuilder{
-        private DrawableRequestBuilder builder;
+    public class ImageBuilder<T>{
+        private DrawableRequestBuilder<T> builder;
         protected Context context;
 
-        public ImageBuilder(DrawableRequestBuilder builder,Context context){
+        public ImageBuilder(DrawableRequestBuilder<T> builder,Context context){
             this.context = context;
             this.builder = builder;
 
@@ -269,6 +253,28 @@ public class ImageUtils{
             return this;
         }
 
+        /**
+         * 设置加载监听
+         */
+        public ImageBuilder  setLoadListener(final ImageLoadingListener listener){
+            if(listener!=null){
+                builder.listener(new RequestListener<T,GlideDrawable>(){
+                    @Override
+                    public boolean onException(Exception e,T model,Target<GlideDrawable> target,boolean isFirstResource){
+                        listener.onLoadingFail(e);
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(GlideDrawable resource,T model,Target<GlideDrawable> target,boolean isFromMemoryCache,boolean isFirstResource){
+                        listener.onLoadingSuccess(model,resource);
+                        return false;
+                    }
+                });
+            }
+            return this;
+        }
+
         /** 显示到ImageView */
         public void display(ImageView image){
             builder.into(image);
@@ -285,5 +291,11 @@ public class ImageUtils{
                 }
             });
         }
+        
+    }
+
+    public interface ImageLoadingListener{
+        void onLoadingSuccess(Object s, Drawable drawable);
+        void onLoadingFail(Exception e);
     }
 }
