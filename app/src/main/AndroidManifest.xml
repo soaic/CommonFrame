@@ -78,6 +78,8 @@
         </activity>
         <activity android:name=".socket.SocketDemoActivity">
         </activity>
+        <activity android:name=".kotlin.KotlinActivity">
+        </activity>
     </application>
 
 </manifest>

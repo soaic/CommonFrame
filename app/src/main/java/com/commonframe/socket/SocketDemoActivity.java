@@ -53,7 +53,6 @@ public class SocketDemoActivity extends BaseActivity{
                             });
                         }
                     });
-                    
                 }
             }
         }).start();

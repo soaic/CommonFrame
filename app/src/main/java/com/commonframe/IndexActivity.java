@@ -14,6 +14,7 @@ import com.commonframe.baseview.WebActivity;
 import com.commonframe.fragment.FragmentActivity;
 import com.commonframe.glide.GlideDemoActivity;
 import com.commonframe.greendao.GreenDaoDemoActivity;
+import com.commonframe.kotlin.KotlinActivity;
 import com.commonframe.material.MaterialActivity;
 import com.commonframe.mvp.ui.activity.MainActivity;
 import com.commonframe.recyclerview.RecyclerViewDemoActivity;
@@ -115,7 +116,7 @@ public class IndexActivity extends BaseActivity{
             @Override
             public void onClick(View view){
                 //startActivity(new Intent(getApplicationContext(),RecyclerViewDemoActivity.class));
-                startActivity(new Intent(getApplicationContext(),com.commonframe.socket.SocketDemoActivity.class));
+                startActivity(new Intent(getApplicationContext(),KotlinActivity.class));
             }
         });
     }
